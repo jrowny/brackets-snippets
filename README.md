@@ -1,7 +1,7 @@
 brackets-snippets
 =================
 
-A brackets snippets extension. To install, place in extensions\user folder.
+A brackets snippets extension. To install, place in ```brackets/src/extensions/user``` folder.
 
 Usage
 **Ctrl-Shift-S** shows you what snippets are available
