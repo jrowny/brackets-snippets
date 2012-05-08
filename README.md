@@ -12,7 +12,8 @@ becomes
 ```function myFunc () {
 }```
 
-```for x myArray``` becomes:
+```for x myArray```
+becomes:
 ```var x;
 for (x = 0; x < myArray.length; x++) {
 
