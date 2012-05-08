@@ -152,7 +152,9 @@ define(function (require, exports, module) {
             newKey = {};
         
         currentKeyMap['Ctrl-Alt-S'] = exports.SNIPPET_EXECUTE;
+        currentKeyMap['Cmd-Alt-S'] = exports.SNIPPET_EXECUTE;
         currentKeyMap['Ctrl-Shift-S'] = exports.VIEW_HIDE_SNIPPETS;
+        currentKeyMap['Cmd-Shift-S'] = exports.VIEW_HIDE_SNIPPETS;
         
         for (key in currentKeyMap) {
             if (currentKeyMap.hasOwnProperty(key)) {
