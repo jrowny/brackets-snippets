@@ -1,6 +1,7 @@
 /*
- * Copyright (c) 2012 Adobe Systems Incorporated. All rights reserved.
- *  
+ * Copyright (c) 2012 Jonathan Rowny. All rights reserved.
+ * http://www.jonathanrowny.com
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"), 
  * to deal in the Software without restriction, including without limitation 
@@ -18,7 +19,6 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING 
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER 
  * DEALINGS IN THE SOFTWARE.
- * 
  */
 
 /*jslint vars: true, plusplus: true, devel: true, nomen: true, indent: 4, maxerr: 50 */
@@ -93,7 +93,6 @@ define(function (require, exports, module) {
             }
         }
     }
-    
     //shows the snippets table
     function showSnippets() {
         var $snippetsTable = $("<table class='zebra-striped condensed-table'>").append("<tbody>");
@@ -152,9 +151,7 @@ define(function (require, exports, module) {
             newKey = {};
         
         currentKeyMap['Ctrl-Alt-S'] = exports.SNIPPET_EXECUTE;
-        currentKeyMap['Cmd-Alt-S'] = exports.SNIPPET_EXECUTE;
         currentKeyMap['Ctrl-Shift-S'] = exports.VIEW_HIDE_SNIPPETS;
-        currentKeyMap['Cmd-Shift-S'] = exports.VIEW_HIDE_SNIPPETS;
         
         for (key in currentKeyMap) {
             if (currentKeyMap.hasOwnProperty(key)) {
@@ -173,7 +170,7 @@ define(function (require, exports, module) {
             CommandManager.execute(exports.VIEW_HIDE_SNIPPETS);
         });
         
-        var directory = FileUtils.getNativeBracketsDirectoryPath() + "/extensions/user/snippets/data";
+        var directory = FileUtils.getNativeBracketsDirectoryPath() + "/extensions/user/brackets-snippets/data";
         NativeFileSystem.requestNativeFileSystem(directory,
             function (rootEntry) {
                 rootEntry.createReader().readEntries(
