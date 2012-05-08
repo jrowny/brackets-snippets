@@ -1,0 +1,23 @@
+[
+    {
+        "name": "Function",
+        "trigger": "f",
+        "usage": "f myFunc",
+        "description": "Create a javascript function",
+        "template": "function $${name}() {\n\n}"
+    },
+    {
+        "name": "For Loop",
+        "trigger": "for",
+        "usage": "for x someArray",
+        "description": "Create a javascript for loop",
+        "template": "var $${iterator};\nfor( $${iterator} = 0; $${iterator} < $${container}.length; $${iterator}++ ) {\n\n}"
+    },
+    {
+        "name": "Requires",
+        "trigger": "req",
+        "usage": "req Editor editor\\Editor",
+        "description": "Create a javascript requires block",
+        "template": "var $${name} = require(\"$${path}\");"
+    }
+]
