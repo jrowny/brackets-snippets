@@ -139,7 +139,7 @@ define(function (require, exports, module) {
     function init() {
         //add the HTML
         $('#main-toolbar .nav li:nth-child(3) ul.dropdown-menu').append('<li><a href="#" id="menu-view-hide-snippets"><span>Show Snippets</span></a></li>');
-        $('.content').append('<div id="snippets"/>');
+        $('.content').append('<div id="snippets" class="bottom-panel"/>');
         $('#snippets').append('<div class="toolbar simpleToolbarLayout"/>');
         $('#snippets .toolbar').append('<div class="title">Snippets</div><a href="#" class="close">&times;</a>');
         $('#snippets').append('<div class="table-container"/>');
