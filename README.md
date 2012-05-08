@@ -1,20 +1,24 @@
 brackets-snippets
 =================
 
-A brackets snippets extension
+A brackets snippets extension. To install, place in extensions\user folder.
 
 Usage
+**Ctrl-Shift-S** shows you what snippets are available
+type a trigger followed by parameters, hit **Ctrl-Alt-S** to inser the snipped. (Cmd-Alt-S) on Mac. 
 
-type a trigger followed by parameters, hit Ctrl-Alt-S to inser the snipped
+```f myFunc``` becomes 
 
-```f myFunc``` 
-becomes 
-```function myFunc () {
-}```
+```
+function myFunc () {
+}
+```
 
 ```for x myArray```
 becomes:
-```var x;
+```
+var x;
 for (x = 0; x < myArray.length; x++) {
 
-}```
+}
+```
