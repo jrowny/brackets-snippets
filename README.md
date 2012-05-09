@@ -24,3 +24,5 @@ for (x = 0; x < myArray.length; x++) {
 
 }
 ```
+
+If you omit parameters, an inline form will appear. 
