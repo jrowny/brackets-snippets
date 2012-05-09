@@ -215,25 +215,50 @@ define(function (require, exports, module) {
             CommandManager.execute(exports.VIEW_HIDE_SNIPPETS);
         });
         
-        var directory = FileUtils.getNativeBracketsDirectoryPath() + "/" + module.uri.replace('main.js', '') + "data";
-        NativeFileSystem.requestNativeFileSystem(directory,
-            function (rootEntry) {
-                rootEntry.createReader().readEntries(
-                    function (entries) {
-                        var i;
-                        for (i = 0; i < entries.length; i++) {
-                            loadSnippet(directory + "/" + entries[i].name);
+        var fullPath = FileUtils.getNativeBracketsDirectoryPath() + "/" + module.uri.replace('main.js', 'config.js');
+        var fileEntry = new NativeFileSystem.FileEntry(fullPath);
+        FileUtils.readAsText(fileEntry)
+            .done(function (text, readTimestamp) {
+                try {
+                    try {
+                        var config = JSON.parse(text);
+                        var directory;
+                        //Look for any marker of a non relative path
+                        if (config.dataDirectory.indexOf("/") != -1 || config.dataDirectory.indexOf("\\") != -1) {
+                            directory = config.dataDirectory;
+                        } else {
+                            directory = FileUtils.getNativeBracketsDirectoryPath() + "/" + module.uri.replace('main.js', '') + config.dataDirectory;
                         }
-                        showSnippets();
-                    },
-                    function (error) {
-                        console.log("[Snippets] Error -- could not read snippets directory: " + directory);
+                        NativeFileSystem.requestNativeFileSystem(directory,
+                            function (rootEntry) {
+                                rootEntry.createReader().readEntries(
+                                    function (entries) {
+                                        var i;
+                                        for (i = 0; i < entries.length; i++) {
+                                            loadSnippet(directory + "/" + entries[i].name);
+                                        }
+                                        showSnippets();
+                                    },
+                                    function (error) {
+                                        console.log("[Snippets] Error -- could not read snippets directory: " + directory);
+                                    }
+                                );
+                            },
+                            function (error) {
+                                console.log("[Snippets] Error -- could not open snippets directory: " + directory);
+                            });
+
+                    } catch (e) {
+                        console.log("Can't parse config.js - " + e);
                     }
-                );
-            },
-            function (error) {
-                console.log("[Snippets] Error -- could not open snippets directory: " + directory);
+                } catch (e) {
+                    console.log("Can't parse snippets from " + fullPath);
+                }
+            })
+            .fail(function (error) {
+                FileUtils.showFileOpenError(error.code, fullPath);
             });
+
     }
     
     init();
