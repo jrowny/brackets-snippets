@@ -11,7 +11,7 @@
         "trigger": "for",
         "usage": "for x someArray",
         "description": "Create a javascript for loop",
-        "template": "var $${iterator};\nfor( $${iterator} = 0; $${iterator} < $${container}.length; $${iterator}++ ) {\n\n}"
+        "template": "var $${iterator};\nfor ($${iterator} = 0; $${iterator} < $${container}.length; $${iterator}++) {\n\n}"
     },
     {
         "name": "Requires",

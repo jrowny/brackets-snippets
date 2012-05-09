@@ -34,7 +34,10 @@ define(function (require, exports, module) {
         KeyBindingManager       = brackets.getModule("command/KeyBindingManager"),
         KeyMap                  = brackets.getModule("command/KeyMap"),
         FileUtils               = brackets.getModule("file/FileUtils");
-        
+    
+    // Local modules
+    var InlineSnippetForm       = require("InlineSnippetForm");
+
     //Snippets array
     var snippets = [];
     function _handleHideSnippets() {
@@ -50,18 +53,37 @@ define(function (require, exports, module) {
         EditorManager.resizeEditor();
     }
     
+    function inlineSnippetFormProvider(hostEditor, props) {
+        var result = new $.Deferred();
+
+        var snippetForm = new InlineSnippetForm(props);
+        snippetForm.load(hostEditor);
+        
+        result.resolve(snippetForm);
+        
+        return result.promise();
+    }
+    
     function _handleSnippet() {
         var editor = EditorManager.getCurrentFullEditor();
         var pos = editor.getCursorPos();
         var line = editor.getLineText(pos.line);
         var props = $.trim(line).split(" ");
-               
+        
+        function completeInsert(editor, pos, output) {
+            editor._codeMirror.setLine(pos.line, output);
+            var s;
+            for (s = 0; s < output.split("\n").length; s++) {
+                editor._codeMirror.indentLine(pos.line + s);
+            }
+        }
+        
         if (props.length) {
             //try to find the snippet, given the trigger text
             var i;
             for (i = 0; i < snippets.length; i++) {
+                var output = snippets[i].template;
                 if (snippets[i].trigger === props[0]) {
-                    var output = snippets[i].template;
                     //find variables
                     var tmp = snippets[i].template.match(/\$\$\{[0-9A-Z_a-z]{1,32}\}/g);
                      //remove duplicate variables
@@ -80,19 +102,38 @@ define(function (require, exports, module) {
                             var re = new RegExp(snippetVariables[x].replace('$${', '\\$\\$\\{').replace('}', '\\}'), 'g');
                             output = output.replace(re, props[x + 1]);
                         }
-                        editor._codeMirror.setLine(pos.line, output);
-                        var s;
-                        for (s = 0; s < output.split("\n").length; s++) {
-                            editor._codeMirror.indentLine(pos.line + s);
-                        }
+                        completeInsert(editor, pos, output);
                     } else {
-                        console.log("Opps, this doesn't work yet :(");
+                         // Run through inline-editor providers until one responds
+                        var snippetPromise,
+                            result = new $.Deferred();
+                        snippetPromise = inlineSnippetFormProvider(editor, snippetVariables);
+                        
+                        snippetPromise.done(function (inlineWidget) {
+                            editor.addInlineWidget(pos, inlineWidget);
+                            inlineWidget.$insert.click(function () {
+                                var z;
+                                for (z = 0; z < snippetVariables.length; z++) {
+                                    //even my escapes have escapes
+                                    var re = new RegExp(snippetVariables[z].replace('$${', '\\$\\$\\{').replace('}', '\\}'), 'g');
+                                    output = output.replace(re, inlineWidget.$form.find('.snipvar-' + snippetVariables[z].replace('$${', '').replace('}', '')).val());
+                                }
+                                
+                                completeInsert(editor, pos, output);
+                            });
+                        }).fail(function () {
+                            result.reject();
+                            console.log("Can't create inline snippet form");
+                        });
                     }
                     break;
                 }
             }
         }
     }
+    
+    
+    
     //shows the snippets table
     function showSnippets() {
         var $snippetsTable = $("<table class='zebra-striped condensed-table'>").append("<tbody>");
