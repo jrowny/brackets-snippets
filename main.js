@@ -78,61 +78,62 @@ define(function (require, exports, module) {
             }
         }
         
+        function startInsert(index, output) {
+            //find variables
+            var tmp = snippets[index].template.match(/\$\$\{[0-9A-Z_a-z]{1,32}\}/g);
+             //remove duplicate variables
+            var snippetVariables = [];
+            var j;
+            for (j = 0; j < tmp.length; j++) {
+                if ($.inArray(tmp[j], snippetVariables) === -1) {
+                    snippetVariables.push(tmp[j]);
+                }
+            }
+            //if the same number of variables
+            if (props.length - 1 >= snippetVariables.length) {
+                var x;
+                for (x = 0; x < snippetVariables.length; x++) {
+                    //even my escapes have escapes
+                    var re = new RegExp(snippetVariables[x].replace('$${', '\\$\\$\\{').replace('}', '\\}'), 'g');
+                    output = output.replace(re, props[x + 1]);
+                }
+                completeInsert(editor, pos, output);
+            } else {
+                var snippetPromise,
+                    result = new $.Deferred();
+                snippetPromise = inlineSnippetFormProvider(editor, snippetVariables);
+                
+                snippetPromise.done(function (inlineWidget) {
+                    editor.addInlineWidget(pos, inlineWidget);
+                    inlineWidget.$insert.click(function () {
+                        var z;
+                        for (z = 0; z < snippetVariables.length; z++) {
+                            //even my escapes have escapes
+                            var re = new RegExp(snippetVariables[z].replace('$${', '\\$\\$\\{').replace('}', '\\}'), 'g');
+                            output = output.replace(re, inlineWidget.$form.find('.snipvar-' + snippetVariables[z].replace('$${', '').replace('}', '')).val());
+                        }
+                        
+                        completeInsert(editor, pos, output);
+                    });
+                }).fail(function () {
+                    result.reject();
+                    console.log("Can't create inline snippet form");
+                });
+            }
+        }
+        
         if (props.length) {
             //try to find the snippet, given the trigger text
             var i;
             for (i = 0; i < snippets.length; i++) {
                 var output = snippets[i].template;
                 if (snippets[i].trigger === props[0]) {
-                    //find variables
-                    var tmp = snippets[i].template.match(/\$\$\{[0-9A-Z_a-z]{1,32}\}/g);
-                     //remove duplicate variables
-                    var snippetVariables = [];
-                    var j;
-                    for (j = 0; j < tmp.length; j++) {
-                        if ($.inArray(tmp[j], snippetVariables) === -1) {
-                            snippetVariables.push(tmp[j]);
-                        }
-                    }
-                    //if the same number of variables
-                    if (props.length - 1 >= snippetVariables.length) {
-                        var x;
-                        for (x = 0; x < snippetVariables.length; x++) {
-                            //even my escapes have escapes
-                            var re = new RegExp(snippetVariables[x].replace('$${', '\\$\\$\\{').replace('}', '\\}'), 'g');
-                            output = output.replace(re, props[x + 1]);
-                        }
-                        completeInsert(editor, pos, output);
-                    } else {
-                         // Run through inline-editor providers until one responds
-                        var snippetPromise,
-                            result = new $.Deferred();
-                        snippetPromise = inlineSnippetFormProvider(editor, snippetVariables);
-                        
-                        snippetPromise.done(function (inlineWidget) {
-                            editor.addInlineWidget(pos, inlineWidget);
-                            inlineWidget.$insert.click(function () {
-                                var z;
-                                for (z = 0; z < snippetVariables.length; z++) {
-                                    //even my escapes have escapes
-                                    var re = new RegExp(snippetVariables[z].replace('$${', '\\$\\$\\{').replace('}', '\\}'), 'g');
-                                    output = output.replace(re, inlineWidget.$form.find('.snipvar-' + snippetVariables[z].replace('$${', '').replace('}', '')).val());
-                                }
-                                
-                                completeInsert(editor, pos, output);
-                            });
-                        }).fail(function () {
-                            result.reject();
-                            console.log("Can't create inline snippet form");
-                        });
-                    }
+                    startInsert(i, output);
                     break;
                 }
             }
         }
     }
-    
-    
     
     //shows the snippets table
     function showSnippets() {
@@ -179,8 +180,10 @@ define(function (require, exports, module) {
     exports.VIEW_HIDE_SNIPPETS = "snippets.hideSnippets";
     
     function init() {
-        //add the HTML
-        $('#main-toolbar .nav li:nth-child(3) ul.dropdown-menu').append('<li><a href="#" id="menu-view-hide-snippets"><span>Show Snippets</span></a></li>');
+        //waiting on a menu API.. this doesn't work :(
+        //$('#main-toolbar .nav li:nth-child(3) ul.dropdown-menu').append('<li><a href="#" id="menu-view-hide-snippets"><span>Show Snippets</span></a></li>');
+        
+        //add the HTML UI
         $('.content').append('<div id="snippets" class="bottom-panel"/>');
         $('#snippets').append('<div class="toolbar simpleToolbarLayout"/>');
         $('#snippets .toolbar').append('<div class="title">Snippets</div><a href="#" class="close">&times;</a>');
@@ -212,7 +215,7 @@ define(function (require, exports, module) {
             CommandManager.execute(exports.VIEW_HIDE_SNIPPETS);
         });
         
-        var directory = FileUtils.getNativeBracketsDirectoryPath() + "/extensions/user/brackets-snippets/data";
+        var directory = FileUtils.getNativeBracketsDirectoryPath() + "/" + module.uri.replace('main.js', '') + "data";
         NativeFileSystem.requestNativeFileSystem(directory,
             function (rootEntry) {
                 rootEntry.createReader().readEntries(
