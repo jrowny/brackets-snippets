@@ -137,7 +137,7 @@ define(function (require, exports, module) {
     //shows the snippets table
     function showSnippets() {
         var $snippetsTable = $("<table class='zebra-striped condensed-table'>").append("<tbody>");
-        $("<tr><th>Name</th><th>Description</th><th>Trigger</th></tr>").appendTo($snippetsTable);
+        $("<tr><th>Name</th><th>Description</th><th>Trigger</th><th>Usage Example</th></tr>").appendTo($snippetsTable);
         
         snippets.forEach(function (item) {
             var makeCell = function (content) {
@@ -147,6 +147,7 @@ define(function (require, exports, module) {
                         .append(makeCell(item.name))
                         .append(makeCell(item.description))
                         .append(makeCell(item.trigger))
+                        .append(makeCell(item.usage))
                         .appendTo($snippetsTable);
         });
         
