@@ -1,7 +1,8 @@
 brackets-snippets
 =================
 
-A brackets snippets extension. To install, place in ```brackets/src/extensions/user``` folder.
+A brackets snippets extension. To install, place in ```brackets/src/extensions/user``` folder. 
+When installed, ```main.js``` should be at ```brackets/src/extensions/user/brackets-snippets/main.js```
 
 Usage
 =====
@@ -24,3 +25,9 @@ for (x = 0; x < myArray.length; x++) {
 
 }
 ```
+
+If you omit parameters, an inline form will appear. 
+
+Adding Snippets
+===============
+You can create new JSON files in the ```data``` directory or you can edit the existing ```javascript.json``` file. 
