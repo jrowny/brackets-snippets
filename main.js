@@ -89,6 +89,7 @@ define(function (require, exports, module) {
                     snippetVariables.push(tmp[j]);
                 }
             }
+            
             //if the same number of variables
             if (props.length - 1 >= snippetVariables.length) {
                 var x;
@@ -215,48 +216,44 @@ define(function (require, exports, module) {
             CommandManager.execute(exports.VIEW_HIDE_SNIPPETS);
         });
         
-        var fullPath = FileUtils.getNativeBracketsDirectoryPath() + "/" + module.uri.replace('main.js', 'config.js');
-        var fileEntry = new NativeFileSystem.FileEntry(fullPath);
-        FileUtils.readAsText(fileEntry)
+        var configPath = FileUtils.getNativeBracketsDirectoryPath() + "/" + module.uri.replace('main.js', 'config.js');
+        var configFile = new NativeFileSystem.FileEntry(configPath);
+        FileUtils.readAsText(configFile)
             .done(function (text, readTimestamp) {
+                var config = {};
                 try {
-                    try {
-                        var config = JSON.parse(text);
-                        var directory;
-                        //Look for any marker of a non relative path
-                        if (config.dataDirectory.indexOf("/") != -1 || config.dataDirectory.indexOf("\\") != -1) {
-                            directory = config.dataDirectory;
-                        } else {
-                            directory = FileUtils.getNativeBracketsDirectoryPath() + "/" + module.uri.replace('main.js', '') + config.dataDirectory;
-                        }
-                        NativeFileSystem.requestNativeFileSystem(directory,
-                            function (rootEntry) {
-                                rootEntry.createReader().readEntries(
-                                    function (entries) {
-                                        var i;
-                                        for (i = 0; i < entries.length; i++) {
-                                            loadSnippet(directory + "/" + entries[i].name);
-                                        }
-                                        showSnippets();
-                                    },
-                                    function (error) {
-                                        console.log("[Snippets] Error -- could not read snippets directory: " + directory);
-                                    }
-                                );
+                    config = JSON.parse(text);
+                } catch (e) {
+                    console.log("Can't parse config.js - " + e);
+                    config.dataDirectory = "data";
+                }
+                var directory = FileUtils.getNativeBracketsDirectoryPath() + "/" + module.uri.replace('main.js', '') + config.dataDirectory;
+                //Look for any marker of a non relative path
+                if (config.dataDirectory.indexOf("/") !== -1 || config.dataDirectory.indexOf("\\") !== -1) {
+                    directory = config.dataDirectory;
+                }
+                NativeFileSystem.requestNativeFileSystem(directory,
+                    function (rootEntry) {
+                        rootEntry.createReader().readEntries(
+                            function (entries) {
+                                var i;
+                                for (i = 0; i < entries.length; i++) {
+                                    loadSnippet(directory + "/" + entries[i].name);
+                                }
+                                showSnippets();
                             },
                             function (error) {
-                                console.log("[Snippets] Error -- could not open snippets directory: " + directory);
-                            });
-
-                    } catch (e) {
-                        console.log("Can't parse config.js - " + e);
-                    }
-                } catch (e) {
-                    console.log("Can't parse snippets from " + fullPath);
-                }
+                                console.log("[Snippets] Error -- could not read snippets directory: " + directory);
+                            }
+                        );
+                    },
+                    function (error) {
+                        console.log("[Snippets] Error -- could not open snippets directory: " + directory);
+                    });
+           
             })
             .fail(function (error) {
-                FileUtils.showFileOpenError(error.code, fullPath);
+                FileUtils.showFileOpenError(error.code, configPath);
             });
 
     }
