@@ -4,14 +4,14 @@
         "trigger": "f",
         "usage": "f myFunc",
         "description": "Create a javascript function",
-        "template": "function $${name}() {\n\n}"
+        "template": "function $${name}() {\n!!{cursor}\n}"
     },
     {
         "name": "For Loop",
         "trigger": "for",
         "usage": "for x someArray",
         "description": "Create a javascript for loop",
-        "template": "var $${iterator};\nfor ($${iterator} = 0; $${iterator} < $${container}.length; $${iterator}++) {\n\n}"
+        "template": "var $${iterator};\nfor ($${iterator} = 0; $${iterator} < $${container}.length; $${iterator}++) {\n!!{cursor}\n}"
     },
     {
         "name": "Requires",
