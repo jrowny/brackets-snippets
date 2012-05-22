@@ -73,13 +73,14 @@ define(function (require, exports, module) {
         
         this.$htmlContent.append(this.$wrapperDiv);
     };
-
+    
     InlineSnippetForm.prototype.close = function () {
         this.hostEditor.removeInlineWidget(this);
     };
     
     InlineSnippetForm.prototype.onAdded = function () {
         window.setTimeout(this._sizeEditorToContent.bind(this));
+        this.$form.find('input').first().focus();
     };
     
     InlineSnippetForm.prototype._sizeEditorToContent = function () {
