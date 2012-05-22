@@ -64,18 +64,34 @@ define(function (require, exports, module) {
         return result.promise();
     }
     
-    function _handleSnippet() {
+    function _handleSnippet(props) {
         var editor = EditorManager.getCurrentFullEditor();
         var pos = editor.getCursorPos();
         var line = editor.getLineText(pos.line);
-        var props = $.trim(line).split(" ");
+        if (!props) {
+            props = $.trim(line).split(" ");
+        }
         
         function completeInsert(editor, pos, output) {
-            editor._codeMirror.setLine(pos.line, output);
-            var s;
-            for (s = 0; s < output.split("\n").length; s++) {
-                editor._codeMirror.indentLine(pos.line + s);
+            var s,
+                cursorPos,
+                lines = output.split("\n");
+            for (s = 0; s < lines.length; s++) {
+                if (lines[s].indexOf('!!{cursor}') >= 0) {
+                    cursorPos = s;
+                    lines[s] = lines[s].replace('!!{cursor}', '');
+                }
+                if (s !== lines.length - 1) {
+                    lines[s] = lines[s] + "\n";
+                }
+                editor._codeMirror.setLine(pos.line, lines[s]);
+                editor._codeMirror.indentLine(pos.line);
+                pos.line++;
             }
+            if (cursorPos) {
+                editor._codeMirror.setCursor(pos.line - (lines.length - cursorPos), pos.ch);
+            }
+            EditorManager.focusEditor();
         }
         
         function startInsert(index, output) {
@@ -84,9 +100,11 @@ define(function (require, exports, module) {
              //remove duplicate variables
             var snippetVariables = [];
             var j;
-            for (j = 0; j < tmp.length; j++) {
-                if ($.inArray(tmp[j], snippetVariables) === -1) {
-                    snippetVariables.push(tmp[j]);
+            if (tmp && tmp.length > 0) {
+                for (j = 0; j < tmp.length; j++) {
+                    if ($.inArray(tmp[j], snippetVariables) === -1) {
+                        snippetVariables.push(tmp[j]);
+                    }
                 }
             }
             
@@ -146,7 +164,7 @@ define(function (require, exports, module) {
                 return $("<td/>").html(content);
             };
             var $row = $("<tr/>")
-                        .append(makeCell(item.name))
+                        .append(makeCell('<a href="#" class="insert-snippet" trigger="' + item.trigger + '">' + item.name + '</a>'))
                         .append(makeCell(item.description))
                         .append(makeCell(item.trigger))
                         .append(makeCell(item.usage))
@@ -156,6 +174,10 @@ define(function (require, exports, module) {
         $("#snippets .table-container")
             .empty()
             .append($snippetsTable);
+        
+        $('#snippets .insert-snippet').click(function () {
+            CommandManager.execute(exports.SNIPPET_EXECUTE, [$(this).attr('trigger')]);
+        });
     }
     
     //parse a JSON file with a snippet in it
@@ -175,8 +197,6 @@ define(function (require, exports, module) {
             });
     }
     
-    
-    
     exports.SNIPPET_EXECUTE = "snippets.execute";
     exports.VIEW_HIDE_SNIPPETS = "snippets.hideSnippets";
     
@@ -186,7 +206,7 @@ define(function (require, exports, module) {
         
         //add the HTML UI
         $('.content').append('<div id="snippets" class="bottom-panel"/>');
-        $('#snippets').append('<div class="toolbar simpleToolbarLayout"/>');
+        $('#snippets').append('<div class="toolbar simple-toolbar-layout"/>');
         $('#snippets .toolbar').append('<div class="title">Snippets</div><a href="#" class="close">&times;</a>');
         $('#snippets').append('<div class="table-container"/>');
         $('#snippets').hide();
