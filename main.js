@@ -33,22 +33,28 @@ define(function (require, exports, module) {
         NativeFileSystem        = brackets.getModule("file/NativeFileSystem").NativeFileSystem,
         KeyBindingManager       = brackets.getModule("command/KeyBindingManager"),
         KeyMap                  = brackets.getModule("command/KeyMap"),
-        FileUtils               = brackets.getModule("file/FileUtils");
+        FileUtils               = brackets.getModule("file/FileUtils"),
+        Menus                   = brackets.getModule("command/Menus");
     
     // Local modules
     var InlineSnippetForm       = require("InlineSnippetForm");
 
     //Snippets array
     var snippets = [];
+    
+    //commands
+    var SNIPPET_EXECUTE = "snippets.execute",
+        VIEW_HIDE_SNIPPETS = "snippets.hideSnippets";
+    
     function _handleHideSnippets() {
         var $snippets = $("#snippets");
         
         if ($snippets.css("display") === "none") {
             $snippets.show();
-            $("#menu-view-hide-snippets span").first().text("Hide Snippets");
+            CommandManager.get(VIEW_HIDE_SNIPPETS).setName("Hide Snippets");
         } else {
             $snippets.hide();
-            $("#menu-view-hide-snippets span").first().text("Show Snippets");
+            CommandManager.get(VIEW_HIDE_SNIPPETS).setName("Show Snippets");
         }
         EditorManager.resizeEditor();
     }
@@ -197,44 +203,35 @@ define(function (require, exports, module) {
             });
     }
     
-    exports.SNIPPET_EXECUTE = "snippets.execute";
-    exports.VIEW_HIDE_SNIPPETS = "snippets.hideSnippets";
+  
+		
+    CommandManager.register("Run Snippet", SNIPPET_EXECUTE, _handleSnippet);
+    CommandManager.register("Show Snippets", VIEW_HIDE_SNIPPETS, _handleHideSnippets);
     
     function init() {
-        //waiting on a menu API.. this doesn't work :(
-        //$('#main-toolbar .nav li:nth-child(3) ul.dropdown-menu').append('<li><a href="#" id="menu-view-hide-snippets"><span>Show Snippets</span></a></li>');
-        
         //add the HTML UI
-        $('.content').append('<div id="snippets" class="bottom-panel"/>');
-        $('#snippets').append('<div class="toolbar simple-toolbar-layout"/>');
-        $('#snippets .toolbar').append('<div class="title">Snippets</div><a href="#" class="close">&times;</a>');
-        $('#snippets').append('<div class="table-container"/>');
+        $('.content').append('  <div id="snippets" class="bottom-panel">'
+                             + '  <div class="toolbar simple-toolbar-layout">'
+                             + '    <div class="title">Snippets</div><a href="#" class="close">&times;</a>'
+                             + '  </div>'
+                             + '  <div class="table-container"/>'
+                             + '</div>');
         $('#snippets').hide();
+        
+        //add the menu and keybinding for view/hide
+        var menu = Menus.getMenu(Menus.AppMenuBar.VIEW_MENU);
+        menu.addMenuItem("menu-snippets-view", VIEW_HIDE_SNIPPETS, "Ctrl-Shift-S", Menus.AFTER, "menu-view-sidebar");
+        
         //add the keybinding
-        var currentKeyMap = KeyBindingManager.getKeymap(),
-            key = "",
-            newMap = [],
-            newKey = {};
-        
-        currentKeyMap['Ctrl-Alt-S'] = exports.SNIPPET_EXECUTE;
-        currentKeyMap['Ctrl-Shift-S'] = exports.VIEW_HIDE_SNIPPETS;
-        
-        for (key in currentKeyMap) {
-            if (currentKeyMap.hasOwnProperty(key)) {
-                newKey = {};
-                newKey[key] = currentKeyMap[key];
-                newMap.push(newKey);
-            }
-        }
-        var _newGlobalKeymap = KeyMap.create({
-                "bindings": newMap,
-                "platform": brackets.platform
-            });
-        KeyBindingManager.installKeymap(_newGlobalKeymap);
+        KeyBindingManager.addBinding(SNIPPET_EXECUTE, "Ctrl-Alt-S");
         
         $('#snippets .close').click(function () {
             CommandManager.execute(exports.VIEW_HIDE_SNIPPETS);
         });
+        
+        function test() {
+            
+        }
         
         //snippet module's directory
         var moduleDir = FileUtils.getNativeModuleDirectoryPath(module);
@@ -287,6 +284,4 @@ define(function (require, exports, module) {
     
     init();
     
-    CommandManager.register("Run Snippet", exports.SNIPPET_EXECUTE, _handleSnippet);
-    CommandManager.register("Show Snippets", exports.VIEW_HIDE_SNIPPETS, _handleHideSnippets);
 });
