@@ -287,6 +287,6 @@ define(function (require, exports, module) {
     
     init();
     
-    CommandManager.register("Run Snippets", exports.SNIPPET_EXECUTE, _handleSnippet);
+    CommandManager.register("Run Snippet", exports.SNIPPET_EXECUTE, _handleSnippet);
     CommandManager.register("Show Snippets", exports.VIEW_HIDE_SNIPPETS, _handleHideSnippets);
 });
