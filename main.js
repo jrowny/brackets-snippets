@@ -63,7 +63,7 @@ define(function (require, exports, module) {
         
         return result.promise();
     }
-    
+        
     function _handleSnippet(props) {
         var editor = EditorManager.getCurrentFullEditor();
         var pos = editor.getCursorPos();
@@ -236,22 +236,29 @@ define(function (require, exports, module) {
             CommandManager.execute(exports.VIEW_HIDE_SNIPPETS);
         });
         
-        var configPath = FileUtils.getNativeBracketsDirectoryPath() + "/" + module.uri.replace('main.js', 'config.js');
-        var configFile = new NativeFileSystem.FileEntry(configPath);
+        //snippet module's directory
+        var moduleDir = FileUtils.getNativeModuleDirectoryPath(module);
+        var configFile = new NativeFileSystem.FileEntry(moduleDir + '/config.js');
+        
         FileUtils.readAsText(configFile)
             .done(function (text, readTimestamp) {
                 var config = {};
+                
+                //try to parse the config file
                 try {
                     config = JSON.parse(text);
                 } catch (e) {
                     console.log("Can't parse config.js - " + e);
                     config.dataDirectory = "data";
                 }
-                var directory = FileUtils.getNativeBracketsDirectoryPath() + "/" + module.uri.replace('main.js', '') + config.dataDirectory;
+                var directory = moduleDir + "/" + config.dataDirectory;
+                
                 //Look for any marker of a non relative path
                 if (config.dataDirectory.indexOf("/") !== -1 || config.dataDirectory.indexOf("\\") !== -1) {
                     directory = config.dataDirectory;
                 }
+                
+                //loop through the directory to load snippets
                 NativeFileSystem.requestNativeFileSystem(directory,
                     function (rootEntry) {
                         rootEntry.createReader().readEntries(
@@ -273,13 +280,13 @@ define(function (require, exports, module) {
            
             })
             .fail(function (error) {
-                FileUtils.showFileOpenError(error.code, configPath);
+                FileUtils.showFileOpenError(error.code, configFile);
             });
 
     }
     
     init();
     
-    CommandManager.register(exports.SNIPPET_EXECUTE, _handleSnippet);
-    CommandManager.register(exports.VIEW_HIDE_SNIPPETS, _handleHideSnippets);
+    CommandManager.register("Run Snippets", exports.SNIPPET_EXECUTE, _handleSnippet);
+    CommandManager.register("Show Snippets", exports.VIEW_HIDE_SNIPPETS, _handleHideSnippets);
 });
