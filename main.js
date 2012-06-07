@@ -32,7 +32,6 @@ define(function (require, exports, module) {
         EditorManager           = brackets.getModule("editor/EditorManager"),
         NativeFileSystem        = brackets.getModule("file/NativeFileSystem").NativeFileSystem,
         KeyBindingManager       = brackets.getModule("command/KeyBindingManager"),
-        KeyMap                  = brackets.getModule("command/KeyMap"),
         FileUtils               = brackets.getModule("file/FileUtils"),
         Menus                   = brackets.getModule("command/Menus");
     
