@@ -36,7 +36,8 @@ define(function (require, exports, module) {
         Menus                   = brackets.getModule("command/Menus");
     
     // Local modules
-    var InlineSnippetForm       = require("InlineSnippetForm");
+    var InlineSnippetForm       = require("InlineSnippetForm"),
+        SnippetPresets          = require("SnippetPresets");
 
     //Snippets array
     var snippets = [];
@@ -81,6 +82,7 @@ define(function (require, exports, module) {
             var s,
                 cursorPos,
                 lines = output.split("\n");
+
             for (s = 0; s < lines.length; s++) {
                 if (lines[s].indexOf('!!{cursor}') >= 0) {
                     cursorPos = s;
@@ -99,12 +101,14 @@ define(function (require, exports, module) {
             EditorManager.focusEditor();
         }
         
-        function startInsert(index, output) {
+        function startInsert(output) {
             //find variables
-            var tmp = snippets[index].template.match(/\$\$\{[0-9A-Z_a-z]{1,32}\}/g);
+            var tmp = output.match(/\$\$\{[0-9A-Z_a-z]{1,32}\}/g);
              //remove duplicate variables
-            var snippetVariables = [];
-            var j;
+            var snippetVariables = [],
+                j;
+            
+                        
             if (tmp && tmp.length > 0) {
                 for (j = 0; j < tmp.length; j++) {
                     if ($.inArray(tmp[j], snippetVariables) === -1) {
@@ -152,7 +156,7 @@ define(function (require, exports, module) {
             for (i = 0; i < snippets.length; i++) {
                 var output = snippets[i].template;
                 if (snippets[i].trigger === props[0]) {
-                    startInsert(i, output);
+                    startInsert(SnippetPresets.execute(output));
                     break;
                 }
             }
