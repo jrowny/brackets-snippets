@@ -223,7 +223,7 @@ define(function (require, exports, module) {
         
         //add the menu and keybinding for view/hide
         var menu = Menus.getMenu(Menus.AppMenuBar.VIEW_MENU);
-        menu.addMenuItem("menu-snippets-view", VIEW_HIDE_SNIPPETS, "Ctrl-Shift-S", Menus.AFTER, "menu-view-sidebar");
+        menu.addMenuItem(VIEW_HIDE_SNIPPETS, "Ctrl-Shift-S", Menus.AFTER, Commands.VIEW_HIDE_SIDEBAR);
         
         //add the keybinding
         KeyBindingManager.addBinding(SNIPPET_EXECUTE, "Ctrl-Alt-S");
