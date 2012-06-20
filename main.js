@@ -30,6 +30,7 @@ define(function (require, exports, module) {
     var Commands                = brackets.getModule("command/Commands"),
         CommandManager          = brackets.getModule("command/CommandManager"),
         EditorManager           = brackets.getModule("editor/EditorManager"),
+        DocumentManager         = brackets.getModule("document/DocumentManager"),
         NativeFileSystem        = brackets.getModule("file/NativeFileSystem").NativeFileSystem,
         KeyBindingManager       = brackets.getModule("command/KeyBindingManager"),
         FileUtils               = brackets.getModule("file/FileUtils"),
@@ -72,8 +73,9 @@ define(function (require, exports, module) {
         
     function _handleSnippet(props) {
         var editor = EditorManager.getCurrentFullEditor();
+        var document = DocumentManager.getCurrentDocument();
         var pos = editor.getCursorPos();
-        var line = editor.getLineText(pos.line);
+        var line = document.getLine(pos.line);
         if (!props) {
             props = $.trim(line).split(" ");
         }

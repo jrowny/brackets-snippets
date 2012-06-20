@@ -33,6 +33,7 @@ define(function (require, exports, module) {
         this.props = props;
         InlineWidget.call(this);
     }
+    
     InlineSnippetForm.prototype = new InlineWidget();
     InlineSnippetForm.prototype.constructor = InlineSnippetForm;
     InlineSnippetForm.prototype.parentClass = InlineWidget.prototype;
@@ -41,16 +42,16 @@ define(function (require, exports, module) {
     InlineSnippetForm.prototype.$wrapperDiv = null;
     InlineSnippetForm.prototype.$form = null;
     InlineSnippetForm.prototype.$insert = null;
-    
-    
+        
     InlineSnippetForm.prototype.load = function (hostEditor) {
         this.parentClass.load.call(this, hostEditor);
         this.$insert = $('<button style="border:1px solid #666;padding:4px;">Insert</button>');
+        this.$cancel = $('<button style="border:1px solid #666;padding:4px;margin-left:3px">Cancel</button>');
         this.$form = $("<div/>");
         
         var $insWrapper = $('<div><label style="padding-right:4px;">&nbsp;</label></div>');
         
-        $insWrapper.append(this.$insert);
+        $insWrapper.append(this.$insert).append(this.$cancel);
         
         function formElement(property) {
             property = property.replace('$${', '').replace('}', '');
@@ -66,6 +67,7 @@ define(function (require, exports, module) {
         }
        
         this.$insert.click(this.close.bind(this));
+        this.$cancel.click(this.close.bind(this));
         this.$form.append($insWrapper);
         // Wrapper
         this.$wrapperDiv = $('<div style="padding:10px;"/>')
