@@ -228,10 +228,10 @@ define(function (require, exports, module) {
         menu.addMenuItem(VIEW_HIDE_SNIPPETS, "Ctrl-Shift-S", Menus.AFTER, Commands.VIEW_HIDE_SIDEBAR);
         
         //add the keybinding
-        KeyBindingManager.addBinding(SNIPPET_EXECUTE, "Ctrl-Alt-S");
+        KeyBindingManager.addBinding(SNIPPET_EXECUTE, "Ctrl-Alt-V");
         
         $('#snippets .close').click(function () {
-            CommandManager.execute(exports.VIEW_HIDE_SNIPPETS);
+            CommandManager.execute(VIEW_HIDE_SNIPPETS);
         });
         
         function test() {

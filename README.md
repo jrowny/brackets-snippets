@@ -8,7 +8,7 @@ Usage
 =====
 **Ctrl-Shift-S** shows you what snippets are available
 
-type a trigger followed by parameters, hit **Ctrl-Alt-S** to insert the snipped. (Cmd-Alt-S) on Mac. 
+type a trigger followed by parameters, hit **Ctrl-Alt-V** to insert the snipped. (Cmd-Alt-V) on Mac. 
 
 ```f myFunc``` becomes 
 
