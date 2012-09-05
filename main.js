@@ -26,7 +26,6 @@
 
 define(function (require, exports, module) {
     'use strict';
-    
     var Commands                = brackets.getModule("command/Commands"),
         CommandManager          = brackets.getModule("command/CommandManager"),
         EditorManager           = brackets.getModule("editor/EditorManager"),
@@ -165,46 +164,54 @@ define(function (require, exports, module) {
         }
     }
     
+    function makeCell(content) {
+        return $("<td/>").html(content);
+    }
+    
     //shows the snippets table
     function showSnippets() {
-        var $snippetsTable = $("<table class='zebra-striped condensed-table'>").append("<tbody>");
-        $("<tr><th>Name</th><th>Description</th><th>Trigger</th><th>Usage Example</th></tr>").appendTo($snippetsTable);
+        $('.content').append('  <div id="snippets" class="bottom-panel">'
+                             + '  <div class="toolbar simple-toolbar-layout">'
+                             + '    <div class="title">Snippets</div><a href="#" class="close">&times;</a>'
+                             + '  </div>'
+                             + '  <div class="table-container"/>'
+                             + '</div>');
+        $('#snippets').hide();
         
-        snippets.forEach(function (item) {
-            var makeCell = function (content) {
-                return $("<td/>").html(content);
-            };
-            var $row = $("<tr/>")
-                        .append(makeCell('<a href="#" class="insert-snippet" trigger="' + item.trigger + '">' + item.name + '</a>'))
-                        .append(makeCell(item.description))
-                        .append(makeCell(item.trigger))
-                        .append(makeCell(item.usage))
-                        .appendTo($snippetsTable);
-        });
+        var $snippetsTable = $("<table id='snippets-table' class='zebra-striped condensed-table'>").append("<tbody>");
+        $("<tr><th>Name</th><th>Description</th><th>Trigger</th><th>Usage Example</th></tr>").appendTo($snippetsTable);
         
         $("#snippets .table-container")
             .empty()
             .append($snippetsTable);
         
-        $('#snippets .insert-snippet').click(function () {
-            CommandManager.execute(exports.SNIPPET_EXECUTE, [$(this).attr('trigger')]);
+        $('#snippets-table').on('click', '.insert-snippet', function () {
+            CommandManager.execute(SNIPPET_EXECUTE, [$(this).attr('trigger')]);
         });
     }
     
     //parse a JSON file with a snippet in it
-    function loadSnippet(fullPath) {
-        var fileEntry = new NativeFileSystem.FileEntry(fullPath);
+    function loadSnippet(fileEntry) {
         FileUtils.readAsText(fileEntry)
             .done(function (text, readTimestamp) {
                 try {
                     //TODO: a better check for valid snippets
-                    snippets = snippets.concat(JSON.parse(text));
+                    var newSnippets = JSON.parse(text);
+                    newSnippets.forEach(function (item) {
+                        $("<tr/>")
+                            .append(makeCell('<a href="#" class="insert-snippet" trigger="' + item.trigger + '">' + item.name + '</a>'))
+                            .append(makeCell(item.description))
+                            .append(makeCell(item.trigger))
+                            .append(makeCell(item.usage))
+                            .appendTo($('#snippets-table'));
+                    });
+                    snippets = snippets.concat(newSnippets);
                 } catch (e) {
-                    console.log("Can't parse snippets from " + fullPath);
+                    console.log("Can't parse snippets from " + fileEntry.fullPath);
                 }
             })
             .fail(function (error) {
-                FileUtils.showFileOpenError(error.code, fullPath);
+                FileUtils.showFileOpenError(error.code, fileEntry.fullPath);
             });
     }
     
@@ -215,14 +222,8 @@ define(function (require, exports, module) {
     
     function init() {
         //add the HTML UI
-        $('.content').append('  <div id="snippets" class="bottom-panel">'
-                             + '  <div class="toolbar simple-toolbar-layout">'
-                             + '    <div class="title">Snippets</div><a href="#" class="close">&times;</a>'
-                             + '  </div>'
-                             + '  <div class="table-container"/>'
-                             + '</div>');
-        $('#snippets').hide();
-        
+        showSnippets();
+
         //add the menu and keybinding for view/hide
         var menu = Menus.getMenu(Menus.AppMenuBar.VIEW_MENU);
         menu.addMenuItem(VIEW_HIDE_SNIPPETS, "Ctrl-Shift-S", Menus.AFTER, Commands.VIEW_HIDE_SIDEBAR);
@@ -259,7 +260,6 @@ define(function (require, exports, module) {
                 if (config.dataDirectory.indexOf("/") !== -1 || config.dataDirectory.indexOf("\\") !== -1) {
                     directory = config.dataDirectory;
                 }
-                
                 //loop through the directory to load snippets
                 NativeFileSystem.requestNativeFileSystem(directory,
                     function (rootEntry) {
@@ -267,9 +267,8 @@ define(function (require, exports, module) {
                             function (entries) {
                                 var i;
                                 for (i = 0; i < entries.length; i++) {
-                                    loadSnippet(directory + "/" + entries[i].name);
+                                    loadSnippet(entries[i]);
                                 }
-                                showSnippets();
                             },
                             function (error) {
                                 console.log("[Snippets] Error -- could not read snippets directory: " + directory);
