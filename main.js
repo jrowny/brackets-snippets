@@ -135,7 +135,7 @@ define(function (require, exports, module) {
                 
                 snippetPromise.done(function (inlineWidget) {
                     editor.addInlineWidget(pos, inlineWidget);
-                    inlineWidget.$insert.click(function () {
+                    var inlineComplete = function () {
                         var z;
                         for (z = 0; z < snippetVariables.length; z++) {
                             //even my escapes have escapes
@@ -144,6 +144,14 @@ define(function (require, exports, module) {
                         }
                         
                         completeInsert(editor, pos, output);
+                    };
+                    inlineWidget.$insert.click(inlineComplete);
+                    inlineWidget.$form.keypress(function (e) {
+                        if (e.which === 13) {
+                            e.preventDefault();
+                            inlineComplete();
+                            inlineWidget.close();
+                        }
                     });
                 }).fail(function () {
                     result.reject();

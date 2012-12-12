@@ -65,9 +65,10 @@ define(function (require, exports, module) {
         for (x = 0; x < this.props.length; x++) {
             this.$form.append(formElement(this.props[x]));
         }
-       
+               
         this.$insert.click(this.close.bind(this));
         this.$cancel.click(this.close.bind(this));
+                                
         this.$form.append($insWrapper);
         // Wrapper
         this.$wrapperDiv = $('<div style="padding:10px;"/>')
