@@ -45,8 +45,8 @@ define(function (require, exports, module) {
         
     InlineSnippetForm.prototype.load = function (hostEditor) {
         this.parentClass.load.call(this, hostEditor);
-        this.$insert = $('<button style="border:1px solid #666;padding:4px;">Insert</button>');
-        this.$cancel = $('<button style="border:1px solid #666;padding:4px;margin-left:3px">Cancel</button>');
+        this.$insert = $('<button class="btn btn-primary">Insert</button>');
+        this.$cancel = $('<button class="btn">Cancel</button>');
         this.$form = $("<div/>");
         
         var $insWrapper = $('<div><label style="padding-right:4px;">&nbsp;</label></div>');

@@ -1,8 +1,7 @@
 brackets-snippets
 =================
 
-A brackets snippets extension. To install, place in ```brackets/src/extensions/user``` folder. 
-When installed, ```main.js``` should be at ```brackets/src/extensions/user/brackets-snippets/main.js```
+A brackets snippets extension. To install, place the extension in your extensions folder. Find your extensions folder by going to "Help -> Show Extensions Folder"
 
 Usage
 =====

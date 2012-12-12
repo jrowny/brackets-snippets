@@ -78,6 +78,7 @@ define(function (require, exports, module) {
         if (!props) {
             props = $.trim(line).split(" ");
         }
+            
         
         function completeInsert(editor, pos, output) {
             var s,
@@ -168,6 +169,8 @@ define(function (require, exports, module) {
         return $("<td/>").html(content);
     }
     
+    
+    
     //shows the snippets table
     function showSnippets() {
         $('.content').append('  <div id="snippets" class="bottom-panel">'
@@ -189,7 +192,7 @@ define(function (require, exports, module) {
             CommandManager.execute(SNIPPET_EXECUTE, [$(this).attr('trigger')]);
         });
     }
-    
+            
     //parse a JSON file with a snippet in it
     function loadSnippet(fileEntry) {
         FileUtils.readAsText(fileEntry)
@@ -211,7 +214,7 @@ define(function (require, exports, module) {
                 }
             })
             .fail(function (error) {
-                FileUtils.showFileOpenError(error.code, fileEntry.fullPath);
+                FileUtils.showFileOpenError(error.name, fileEntry.fullPath);
             });
     }
     
@@ -263,7 +266,7 @@ define(function (require, exports, module) {
                 //loop through the directory to load snippets
                 NativeFileSystem.requestNativeFileSystem(directory,
                     function (rootEntry) {
-                        rootEntry.createReader().readEntries(
+                        rootEntry.root.createReader().readEntries(
                             function (entries) {
                                 var i;
                                 for (i = 0; i < entries.length; i++) {
