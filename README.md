@@ -1,3 +1,5 @@
+**WARNING!** The current master does not work with Brackets Sprint 17 and below, either use Brackets on Master or download the B13-B17 tag https://github.com/jrowny/brackets-snippets/tags
+
 brackets-snippets
 =================
 
