@@ -31,4 +31,4 @@ If you omit parameters, an inline form will appear.
 
 Adding Snippets
 ===============
-You can create new JSON files in the ```data``` directory or you can edit the existing ```javascript.json``` file. 
+You can create new JSON files in the ```data``` directory or you can edit the existing ```javascript.json``` file. Your JSON files can reference template files if they have a `.snippet` extension and are also in the `data` directory.
