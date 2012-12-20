@@ -1,10 +1,10 @@
 [
     {
-        "name": "div",
-        "trigger": "d",
-        "usage": "d ",
-        "description": "Create a div",
-        "template": "<div>\n!!{cursor}\n</div>"
+        "name": "html5",
+        "trigger": "html5",
+        "usage": "html5",
+        "description": "Create an HTML5 page",
+        "template": "html5.snippet"
     },
     {
         "name": "link",

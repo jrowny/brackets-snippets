@@ -34,13 +34,15 @@ define(function (require, exports, module) {
         KeyBindingManager       = brackets.getModule("command/KeyBindingManager"),
         FileUtils               = brackets.getModule("file/FileUtils"),
         Menus                   = brackets.getModule("command/Menus");
-    
+
     // Local modules
     var InlineSnippetForm       = require("InlineSnippetForm"),
         SnippetPresets          = require("SnippetPresets");
 
-    //Snippets array
-    var snippets = [];
+        //Snippets array
+    var snippets = [],
+        //directory where snippets are
+        directory = "";
     
     //commands
     var SNIPPET_EXECUTE = "snippets.execute",
@@ -64,7 +66,6 @@ define(function (require, exports, module) {
 
         var snippetForm = new InlineSnippetForm(props);
         snippetForm.load(hostEditor);
-        
         result.resolve(snippetForm);
         
         return result.promise();
@@ -102,14 +103,12 @@ define(function (require, exports, module) {
             }
             EditorManager.focusEditor();
         }
-        
         function startInsert(output) {
             //find variables
             var tmp = output.match(/\$\$\{[0-9A-Z_a-z]{1,32}\}/g);
              //remove duplicate variables
             var snippetVariables = [],
                 j;
-            
                         
             if (tmp && tmp.length > 0) {
                 for (j = 0; j < tmp.length; j++) {
@@ -160,13 +159,27 @@ define(function (require, exports, module) {
             }
         }
         
+        function readSnippetFromFile(fieName) {
+            var snippetFile = new NativeFileSystem.FileEntry(directory + '/' + fieName);
+            FileUtils.readAsText(snippetFile)
+                .done(function (text, readTimestamp) {
+                    startInsert(SnippetPresets.execute(text));
+                }).fail(function (error) {
+                    FileUtils.showFileOpenError(error.code, snippetFile);
+                });
+        }
+        
         if (props.length) {
             //try to find the snippet, given the trigger text
             var i;
             for (i = 0; i < snippets.length; i++) {
-                var output = snippets[i].template;
                 if (snippets[i].trigger === props[0]) {
-                    startInsert(SnippetPresets.execute(output));
+                    var output = snippets[i].template;
+                    if (output.indexOf('.snippet') === output.length - 8) {
+                        readSnippetFromFile(output);
+                    } else {
+                        startInsert(SnippetPresets.execute(output));
+                    }
                     break;
                 }
             }
@@ -190,7 +203,7 @@ define(function (require, exports, module) {
         $('#snippets').hide();
         
         var $snippetsTable = $("<table id='snippets-table' class='zebra-striped condensed-table'>").append("<tbody>");
-        $("<tr><th>Name</th><th>Description</th><th>Trigger</th><th>Usage Example</th></tr>").appendTo($snippetsTable);
+        $("<tr><th>Name</th><th>Description</th><th>Trigger</th><th>Usage Example</th><th>Source</th></tr>").appendTo($snippetsTable);
         
         $("#snippets .table-container")
             .empty()
@@ -214,7 +227,8 @@ define(function (require, exports, module) {
                             .append(makeCell(item.description))
                             .append(makeCell(item.trigger))
                             .append(makeCell(item.usage))
-                            .appendTo($('#snippets-table'));
+                            .appendTo($('#snippets-table'))
+                            .append(makeCell(fileEntry.name)); //TODO: make that clickable to open file;
                     });
                     snippets = snippets.concat(newSnippets);
                 } catch (e) {
@@ -225,9 +239,7 @@ define(function (require, exports, module) {
                 FileUtils.showFileOpenError(error.name, fileEntry.fullPath);
             });
     }
-    
-  
-		
+    		
     CommandManager.register("Run Snippet", SNIPPET_EXECUTE, _handleSnippet);
     CommandManager.register("Show Snippets", VIEW_HIDE_SNIPPETS, _handleHideSnippets);
     
@@ -246,10 +258,6 @@ define(function (require, exports, module) {
             CommandManager.execute(VIEW_HIDE_SNIPPETS);
         });
         
-        function test() {
-            
-        }
-        
         //snippet module's directory
         var moduleDir = FileUtils.getNativeModuleDirectoryPath(module);
         var configFile = new NativeFileSystem.FileEntry(moduleDir + '/config.js');
@@ -265,7 +273,7 @@ define(function (require, exports, module) {
                     console.log("Can't parse config.js - " + e);
                     config.dataDirectory = "data";
                 }
-                var directory = moduleDir + "/" + config.dataDirectory;
+                directory = moduleDir + "/" + config.dataDirectory;
                 
                 //Look for any marker of a non relative path
                 if (config.dataDirectory.indexOf("/") !== -1 || config.dataDirectory.indexOf("\\") !== -1) {
