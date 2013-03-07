@@ -216,6 +216,7 @@ define(function (require, exports, module) {
             
     //parse a JSON file with a snippet in it
     function loadSnippet(fileEntry) {
+        if(fileEntry.isDirectory) return;
         FileUtils.readAsText(fileEntry)
             .done(function (text, readTimestamp) {
                 try {
