@@ -67,10 +67,10 @@ define(function (require, exports, module) {
         }
         
         //make our snippet look nice in the editor
-        htmlOutput = htmlOutput.replace(/(\r\n|\n|\r)/gm, '<br>')
-                               .replace(/\t/g, '    ')
-                               .replace(/</g, '&lt;')
+        htmlOutput = htmlOutput.replace(/</g, '&lt;')
                                .replace(/>/g, '&gt;')
+                               .replace(/(\r\n|\n|\r)/gm, '<br>')
+                               .replace(/\t/g, '    ')
                                .replace('!!{cursor}', '')
                                .replace(/ /g, '&nbsp;');
         

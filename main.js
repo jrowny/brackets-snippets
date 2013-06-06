@@ -50,7 +50,7 @@ define(function (require, exports, module) {
         $snippetsPanel,
         $snippetsContent,
         panel;
-    
+        
     //commands
     var SNIPPET_EXECUTE = "snippets.execute",
         VIEW_HIDE_SNIPPETS = "snippets.hideSnippets";
