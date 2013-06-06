@@ -1,0 +1,9 @@
+{
+    "name": "jrowny.brackets.snippets",
+    "title": "Brackets Snippets",
+    "homepage": "https://github.com/jrowny/brackets-snippets",
+    "author": "Jonathan Rowny",
+    "version": "1.0.0",
+    "engines": { "brackets": ">=0.24" },
+    "description": "A simple brackets snippets extension."
+}

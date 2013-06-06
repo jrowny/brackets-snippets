@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012 Jonathan Rowny. All rights reserved.
+ * Copyright (c) 2013 Jonathan Rowny. All rights reserved.
  * http://www.jonathanrowny.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -22,7 +22,7 @@
  */
 
 /*jslint vars: true, plusplus: true, devel: true, nomen: true, indent: 4, maxerr: 50 */
-/*global define, brackets, $, window */
+/*global define, brackets, $, Mustache, window */
 
 define(function (require, exports, module) {
     'use strict';
@@ -30,41 +30,46 @@ define(function (require, exports, module) {
         CommandManager          = brackets.getModule("command/CommandManager"),
         EditorManager           = brackets.getModule("editor/EditorManager"),
         DocumentManager         = brackets.getModule("document/DocumentManager"),
+        ExtensionUtils          = brackets.getModule("utils/ExtensionUtils"),
         NativeFileSystem        = brackets.getModule("file/NativeFileSystem").NativeFileSystem,
         KeyBindingManager       = brackets.getModule("command/KeyBindingManager"),
         FileUtils               = brackets.getModule("file/FileUtils"),
-        Menus                   = brackets.getModule("command/Menus");
+        Menus                   = brackets.getModule("command/Menus"),
+        PanelManager            = brackets.getModule("view/PanelManager");
 
     // Local modules
-    var InlineSnippetForm       = require("InlineSnippetForm"),
-        SnippetPresets          = require("SnippetPresets");
-
+    var InlineSnippetForm = require("InlineSnippetForm"),
+        SnippetPresets    = require("SnippetPresets"),
+        panelHtml         = require("text!templates/bottom-panel.html"),
+        snippetsHTML      = require("text!templates/snippets-table.html");
+        
         //Snippets array
     var snippets = [],
         //directory where snippets are
-        directory = "";
+        directory = "",
+        $snippetsPanel,
+        $snippetsContent,
+        panel;
     
     //commands
     var SNIPPET_EXECUTE = "snippets.execute",
         VIEW_HIDE_SNIPPETS = "snippets.hideSnippets";
     
     function _handleHideSnippets() {
-        var $snippets = $("#snippets");
-        
-        if ($snippets.css("display") === "none") {
-            $snippets.show();
-            CommandManager.get(VIEW_HIDE_SNIPPETS).setName("Hide Snippets");
+        if (panel.isVisible()) {
+            panel.hide();
+            CommandManager.get(VIEW_HIDE_SNIPPETS).setChecked(false);
         } else {
-            $snippets.hide();
-            CommandManager.get(VIEW_HIDE_SNIPPETS).setName("Show Snippets");
+            panel.show();
+            CommandManager.get(VIEW_HIDE_SNIPPETS).setChecked(true);
         }
         EditorManager.resizeEditor();
     }
     
-    function inlineSnippetFormProvider(hostEditor, props) {
+    function inlineSnippetFormProvider(hostEditor, props, snippet) {
         var result = new $.Deferred();
 
-        var snippetForm = new InlineSnippetForm(props);
+        var snippetForm = new InlineSnippetForm(props, snippet);
         snippetForm.load(hostEditor);
         result.resolve(snippetForm);
         
@@ -79,28 +84,39 @@ define(function (require, exports, module) {
         if (!props) {
             props = $.trim(line).split(" ");
         }
-            
+        
+        //we don't need to see the trigger text
+        CommandManager.execute(Commands.EDIT_DELETE_LINES);
         
         function completeInsert(editor, pos, output) {
             var s,
+                x,
                 cursorPos,
                 lines = output.split("\n");
-
+           
+            //figure out cursor pos, remove cursor marker
             for (s = 0; s < lines.length; s++) {
                 if (lines[s].indexOf('!!{cursor}') >= 0) {
                     cursorPos = s;
-                    lines[s] = lines[s].replace('!!{cursor}', '');
+                    output = output.replace('!!{cursor}', '');
+                    break;
                 }
-                if (s !== lines.length - 1) {
-                    lines[s] = lines[s] + "\n";
-                }
-                editor._codeMirror.setLine(pos.line, lines[s]);
-                editor._codeMirror.indentLine(pos.line);
-                pos.line++;
             }
+                                    
+            //do insertion
+            document.replaceRange(output + "\n", {line: pos.line, ch: 0}, {line: pos.line, ch: 0});
+            
+            //set curosr
             if (cursorPos) {
-                editor._codeMirror.setCursor(pos.line - (lines.length - cursorPos), pos.ch);
+                editor._codeMirror.setCursor(pos.line + cursorPos, pos.ch);
             }
+            
+            //indent lines
+            for (x = 0; x < lines.length; x++) {
+                editor._codeMirror.indentLine(pos.line + x);
+            }
+            
+            //give focus back
             EditorManager.focusEditor();
         }
         function startInsert(output) {
@@ -130,10 +146,11 @@ define(function (require, exports, module) {
             } else {
                 var snippetPromise,
                     result = new $.Deferred();
-                snippetPromise = inlineSnippetFormProvider(editor, snippetVariables);
+                snippetPromise = inlineSnippetFormProvider(editor, snippetVariables, output);
                 
                 snippetPromise.done(function (inlineWidget) {
-                    editor.addInlineWidget(pos, inlineWidget);
+                    var newPos = {line: pos.line - 1, ch: pos.ch};
+                    editor.addInlineWidget(newPos, inlineWidget);
                     var inlineComplete = function () {
                         var z;
                         for (z = 0; z < snippetVariables.length; z++) {
@@ -144,13 +161,9 @@ define(function (require, exports, module) {
                         
                         completeInsert(editor, pos, output);
                     };
-                    inlineWidget.$insert.click(inlineComplete);
-                    inlineWidget.$form.keypress(function (e) {
-                        if (e.which === 13) {
-                            e.preventDefault();
-                            inlineComplete();
-                            inlineWidget.close();
-                        }
+                    inlineWidget.$form.on('complete', function () {
+                        inlineComplete();
+                        inlineWidget.close();
                     });
                 }).fail(function () {
                     result.reject();
@@ -158,9 +171,9 @@ define(function (require, exports, module) {
                 });
             }
         }
-        
+                
         function readSnippetFromFile(fieName) {
-            var snippetFile = new NativeFileSystem.FileEntry(directory + '/' + fieName);
+            var snippetFile = new NativeFileSystem.FileEntry(directory + '/snippets/' + fieName);
             FileUtils.readAsText(snippetFile)
                 .done(function (text, readTimestamp) {
                     startInsert(SnippetPresets.execute(text));
@@ -186,83 +199,85 @@ define(function (require, exports, module) {
         }
     }
     
-    function makeCell(content) {
-        return $("<td/>").html(content);
+    //builds the snippets table
+    function setupSnippets() {
+        var s = Mustache.render(panelHtml);
+        panel = PanelManager.createBottomPanel(VIEW_HIDE_SNIPPETS, $(s), 100);
+        panel.hide();
+        
+        $snippetsPanel = $('#snippets');
+        $snippetsContent = $snippetsPanel.find(".resizable-content");
+        $snippetsPanel.find(".snippets-close").click(function () {
+            CommandManager.execute(VIEW_HIDE_SNIPPETS);
+        });
     }
     
-    
-    
-    //shows the snippets table
-    function showSnippets() {
-        $('.content').append('  <div id="snippets" class="bottom-panel">'
-                             + '  <div class="toolbar simple-toolbar-layout">'
-                             + '    <div class="title">Snippets</div><a href="#" class="close">&times;</a>'
-                             + '  </div>'
-                             + '  <div class="table-container"/>'
-                             + '</div>');
-        $('#snippets').hide();
-        
-        var $snippetsTable = $("<table id='snippets-table' class='zebra-striped condensed-table'>").append("<tbody>");
-        $("<tr><th>Name</th><th>Description</th><th>Trigger</th><th>Usage Example</th><th>Source</th></tr>").appendTo($snippetsTable);
-        
-        $("#snippets .table-container")
-            .empty()
-            .append($snippetsTable);
-        
-        $('#snippets-table').on('click', '.insert-snippet', function () {
-            CommandManager.execute(SNIPPET_EXECUTE, [$(this).attr('trigger')]);
+    function finalizeSnippetsTable() {
+        var i,
+            len,
+            $snippetsTable;
+        for (i = 0, len = arguments.length; i < len; i++) {
+            if (arguments[i] && arguments[i].length) {
+                snippets = snippets.concat(arguments[i]);
+            }
+        }
+        $snippetsTable = Mustache.render(snippetsHTML, {"snippets" : snippets});
+        $snippetsPanel.find('.resizable-content').append($snippetsTable);
+        $snippetsPanel.find('.snippets-trigger').on('click', function () {
+            CommandManager.execute(SNIPPET_EXECUTE, [$(this).attr('data-trigger')]);
+        });
+        $snippetsPanel.find('.snippets-source').on('click', function () {
+            CommandManager.execute(Commands.FILE_OPEN, { fullPath: directory + "/" + $(this).attr('data-source') });
         });
     }
             
     //parse a JSON file with a snippet in it
     function loadSnippet(fileEntry) {
-        if(fileEntry.isDirectory) return;
+        var result = new $.Deferred();
+        if (fileEntry.isDirectory) {
+            return;
+        }
         FileUtils.readAsText(fileEntry)
             .done(function (text, readTimestamp) {
                 try {
                     //TODO: a better check for valid snippets
                     var newSnippets = JSON.parse(text);
                     newSnippets.forEach(function (item) {
-                        $("<tr/>")
-                            .append(makeCell('<a href="#" class="insert-snippet" trigger="' + item.trigger + '">' + item.name + '</a>'))
-                            .append(makeCell(item.description))
-                            .append(makeCell(item.trigger))
-                            .append(makeCell(item.usage))
-                            .appendTo($('#snippets-table'))
-                            .append(makeCell(fileEntry.name)); //TODO: make that clickable to open file;
+                        item.source = fileEntry.name;
                     });
-                    snippets = snippets.concat(newSnippets);
+                    result.resolve(newSnippets);
                 } catch (e) {
                     console.log("Can't parse snippets from " + fileEntry.fullPath);
+                    result.reject("Can't parse snippets from " + fileEntry.fullPath);
                 }
             })
             .fail(function (error) {
                 FileUtils.showFileOpenError(error.name, fileEntry.fullPath);
+                result.reject(error.name + ": " + fileEntry.fullPath);
             });
+        return result;
     }
-    		
+    	
     CommandManager.register("Run Snippet", SNIPPET_EXECUTE, _handleSnippet);
     CommandManager.register("Show Snippets", VIEW_HIDE_SNIPPETS, _handleHideSnippets);
     
     function init() {
         //add the HTML UI
-        showSnippets();
-
+        setupSnippets();
+        
+        ExtensionUtils.loadStyleSheet(module, "snippets.css");
+        
         //add the menu and keybinding for view/hide
         var menu = Menus.getMenu(Menus.AppMenuBar.VIEW_MENU);
         menu.addMenuItem(VIEW_HIDE_SNIPPETS, "Ctrl-Shift-S", Menus.AFTER, Commands.VIEW_HIDE_SIDEBAR);
         
         //add the keybinding
         KeyBindingManager.addBinding(SNIPPET_EXECUTE, "Ctrl-Alt-V");
-        
-        $('#snippets .close').click(function () {
-            CommandManager.execute(VIEW_HIDE_SNIPPETS);
-        });
-        
+                
         //snippet module's directory
         var moduleDir = FileUtils.getNativeModuleDirectoryPath(module);
         var configFile = new NativeFileSystem.FileEntry(moduleDir + '/config.js');
-        
+  
         FileUtils.readAsText(configFile)
             .done(function (text, readTimestamp) {
                 var config = {};
@@ -285,10 +300,11 @@ define(function (require, exports, module) {
                     function (rootEntry) {
                         rootEntry.root.createReader().readEntries(
                             function (entries) {
-                                var i;
-                                for (i = 0; i < entries.length; i++) {
-                                    loadSnippet(entries[i]);
+                                var i, loading = [], len = entries.length;
+                                for (i = 0; i < len; i++) {
+                                    loading.push(loadSnippet(entries[i]));
                                 }
+                                $.when.apply(module, loading).done(finalizeSnippetsTable);
                             },
                             function (error) {
                                 console.log("[Snippets] Error -- could not read snippets directory: " + directory);

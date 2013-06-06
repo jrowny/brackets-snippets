@@ -1,0 +1,18 @@
+<table class="table table-striped row-highlight table-condensed">
+    <tr class="snippets-header">
+        <td>Name</td>
+        <td>Description</td>
+        <td>Trigger</td>
+        <td>Usage</td>
+        <td>Source</td>
+    </tr>
+    {{#snippets}}
+        <tr>
+            <td>{{name}}</td>
+            <td>{{description}}</td>
+            <td><a class="snippets-trigger" data-trigger="{{trigger}}">{{trigger}}</a></td>
+            <td>{{usage}}</td>
+            <td><a class="snippets-source" data-source="{{source}}">{{source}}</a></td>
+        </tr>
+    {{/snippets}}
+</table>

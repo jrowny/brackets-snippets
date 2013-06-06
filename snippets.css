@@ -1,0 +1,71 @@
+/* All selectors are descendents of #snippets to constrain styles to this extension */
+
+/*INLINE FORM*/
+.snippet-form-widget .shadow{
+    display:none;
+}
+.snippet-form-widget{
+    background:transparent;
+    border-top:1px dashed #e5e5e5;
+    border-bottom:1px dashed #e5e5e5;
+    padding:5px 0 5px 80px ;
+}
+
+.snippet-form input{
+    border:0;
+    padding:0 3px;
+    margin:0;
+    border-radius:0;
+    background: transparent;
+    box-shadow:none;
+    border-bottom:1px dashed #4d62ff;
+}
+
+/*PANEL*/
+#snippets .resizable-content {
+    height: 175px;
+    overflow: auto;
+}
+
+#snippets table td {
+    line-height: 14px;
+    padding: 4px 10px;
+}
+
+#snippets table td a {
+    cursor: pointer;
+}
+
+#snippets table .snippets-header td {
+    font-weight: bold;
+    background-color: #404040;
+    padding: 0;
+    color: #fff;
+    padding: 4px 10px;
+}
+
+#snippets .toolbar {
+    display: block;
+}
+
+#snippets .toolbar .snippets-close {
+    font-weight: bold;
+    font-height: 20px;
+    color: #999;
+    float: right;
+    margin-right: 5px;
+}
+
+#snippets .toolbar .snippets-close:hover {
+    text-decoration: none;
+    color: #000;
+}
+
+#snippets .toolbar button.copy-table {
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    float: right;
+    padding: 0 10px;
+    margin-right: 20px;
+    font-size: 90%;
+}

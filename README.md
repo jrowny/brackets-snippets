@@ -1,15 +1,15 @@
-**WARNING!** The current master does not work with Brackets Sprint 17 and below, either use Brackets on Master or download the B13-B17 tag https://github.com/jrowny/brackets-snippets/tags
 
 brackets-snippets
 =================
 
-A brackets snippets extension. To install, place the extension in your extensions folder. Find your extensions folder by going to "Help -> Show Extensions Folder"
+A brackets snippets extension. To install, go to Extension Manager, install from URL and enter `https://github.com/jrowny/brackets-snippets`
 
 Usage
 =====
-**Ctrl-Shift-S** shows you what snippets are available
+**Ctrl-Shift-S** shows you what snippets are available. Click any snippet to begin inserting.
+**Ctrl-Alt-V** to insert the snippet. (Cmd-Alt-V) on Mac.
 
-type a trigger followed by parameters, hit **Ctrl-Alt-V** to insert the snippet. (Cmd-Alt-V) on Mac. 
+type a trigger followed by parameters (optional), then hit Ctrl-Alt-V  
 
 ```f myFunc``` becomes 
 
@@ -27,7 +27,7 @@ for (x = 0; x < myArray.length; x++) {
 }
 ```
 
-If you omit parameters, an inline form will appear. 
+If you omit parameters, an inline form will appear. Use `ESC` to close the inline form or `ENTER` to complete the insertion.
 
 Adding Snippets
 ===============

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012 Jonathan Rowny. All rights reserved.
+ * Copyright (c) 2013 Jonathan Rowny. All rights reserved.
  *  
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"), 
@@ -29,9 +29,19 @@ define(function (require, exports, module) {
     'use strict';
     // Load Brackets modules
     var InlineWidget        = brackets.getModule("editor/InlineWidget").InlineWidget;
-    function InlineSnippetForm(props) {
+    function InlineSnippetForm(props, snippet) {
         this.props = props;
+        this.snippet = snippet;
+        
         InlineWidget.call(this);
+    }
+    
+    function textWidth(text) {
+        var html = $('<span style="postion:absolute;width:auto;left:-9999px">' +  text + '</span>');
+        $('body').append(html);
+        var width = html.width();
+        html.remove();
+        return width;
     }
     
     InlineSnippetForm.prototype = new InlineWidget();
@@ -44,50 +54,87 @@ define(function (require, exports, module) {
     InlineSnippetForm.prototype.$insert = null;
         
     InlineSnippetForm.prototype.load = function (hostEditor) {
+        
+        var htmlOutput = this.snippet,
+            x;
+        
         this.parentClass.load.call(this, hostEditor);
-        this.$insert = $('<button class="btn btn-primary">Insert</button>');
-        this.$cancel = $('<button class="btn">Cancel</button>');
-        this.$form = $("<div/>");
-        
-        var $insWrapper = $('<div><label style="padding-right:4px;">&nbsp;</label></div>');
-        
-        $insWrapper.append(this.$insert).append(this.$cancel);
+        this.$form = $('<div class="snippet-form"><div/>');
         
         function formElement(property) {
             property = property.replace('$${', '').replace('}', '');
-            var $element = $('<div style="padding-bottom:4px;"/>');
-            $element.append('<label for="' + property + '" style="padding-right:4px;">' + property + '</label>');
-            $element.append('<input type="text" class="snipvar-' + property + '"/>');
-            return $element;
+            return '<input type="text" value="" class="snipvar-' + property + '" data-snippet="' + property + '" placeholder="' + property + '"/>';
         }
         
-        var x;
+        //make our snippet look nice in the editor
+        htmlOutput = htmlOutput.replace(/(\r\n|\n|\r)/gm, '<br>')
+                               .replace(/\t/g, '    ')
+                               .replace('!!{cursor}', '')
+                               .replace(/ /g, '&nbsp;');
+        
+        //turn the snippets into form fields
         for (x = 0; x < this.props.length; x++) {
-            this.$form.append(formElement(this.props[x]));
+            htmlOutput = htmlOutput.split(this.props[x]).join(formElement(this.props[x]));
         }
-               
-        this.$insert.click(this.close.bind(this));
-        this.$cancel.click(this.close.bind(this));
-                                
-        this.$form.append($insWrapper);
-        // Wrapper
-        this.$wrapperDiv = $('<div style="padding:10px;"/>')
-            .append(this.$form);
+                
+        this.$form.append(htmlOutput);
         
-        this.$htmlContent.append(this.$wrapperDiv);
+        //size the inputs to the placeholders and changing text
+        this.$form.find('input').each(function () {
+            var $input = $(this);
+            var newWidth = 0;
+            $input.width(textWidth($(this).attr('placeholder')));
+            $input.keyup(function () {
+                if ($input.is(':focus')) {
+                    if ($(this).val() === "") {
+                        newWidth = textWidth($(this).attr('placeholder'));
+                    } else {
+                        //dash gives it some extra space while typing
+                        newWidth = textWidth($(this).val());
+                    }
+                    $input.parent().find('.snipvar-' + $(this).attr('data-snippet')).width(newWidth);
+                    $input.parent().find('.snipvar-' + $(this).attr('data-snippet')).not(this).val($(this).val());
+                }
+            });
+        });
+                
+        //listen for keypress
+        this.$form.keydown(function (e) {
+            //on enter, complete snippet
+            if (e.which === 13) {
+                e.stopImmediatePropagation();
+                e.preventDefault();
+                $(this).trigger('complete');
+            } else if (e.which === 9) {
+                //we will control the tabing
+                e.stopImmediatePropagation();
+                e.preventDefault();
+                
+                //select the next empty element unless there is no next element... or the next element is the current element
+                var next = $(this).find('input').filter(function () { return $(this).val() === ""; });
+                if (next.length && !$(next[0]).is(':focus')) {
+                    $(next[0]).focus();
+                } else {
+                    $(this).trigger('complete');
+                }
+            }
+        });
+                        
+        this.$htmlContent.addClass('snippet-form-widget');
+        this.$htmlContent.append(this.$form);
     };
     
     InlineSnippetForm.prototype.close = function () {
         this.hostEditor.removeInlineWidget(this);
     };
-    
     InlineSnippetForm.prototype.onAdded = function () {
+        InlineSnippetForm.prototype.parentClass.onAdded.apply(this, arguments);
         window.setTimeout(this._sizeEditorToContent.bind(this));
         this.$form.find('input').first().focus();
     };
     
     InlineSnippetForm.prototype._sizeEditorToContent = function () {
-        this.hostEditor.setInlineWidgetHeight(this, this.$wrapperDiv.height() + 20, true);
+        this.hostEditor.setInlineWidgetHeight(this, this.$form.height(), true);
     };
     
     module.exports = InlineSnippetForm;
