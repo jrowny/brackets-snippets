@@ -14,6 +14,13 @@
         "template": "var $${iterator};\nfor ($${iterator} = 0; $${iterator} < $${container}.length; $${iterator}++) {\n!!{cursor}\n}"
     },
     {
+        "name": "For Each",
+        "trigger": "foreach",
+        "usage": "for itemList item",
+        "description": "Create a javascript foreach loop",
+        "template": "$${container}.foreach(function ($${subject}) {\n!!{cursor}\n});"
+    },
+    {
         "name": "Requires",
         "trigger": "req",
         "usage": "req Editor editor\\Editor",
