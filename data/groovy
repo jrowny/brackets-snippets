@@ -1,0 +1,131 @@
+[
+    
+    {
+        "name": "Class",
+        "trigger": "c",
+        "usage": "c myClass",
+        "description": "Create a groovy class",
+        "template": "class $${name} {\n!!{cursor}\n}"
+    },
+  
+	{
+        "name": "Method",
+        "trigger": "m",
+        "usage": "m myMethod",
+        "description": "Create a groovy method",
+        "template": "def $${name}() {\n!!{cursor}\n}"
+    },
+
+	{
+		"name":"if",
+		"trigger":"i",
+		"usage":"i",
+		"description":"Make If",
+		"template":"if ($${condition}) {\n!!{cursor}\n}"
+	},
+	
+	{
+		"name":"if else",
+		"trigger":"ie",
+		"usage":"ie",
+		"description":"Make If else",
+		"template":"if ($${condition}){\n!!{cursor}\n}\nelse\n{\n\n}"
+	},
+	
+	{
+		"name":"if with ?",
+		"trigger":"?:",
+		"usage":"?:",
+		"description":"Make ?:",
+		"template":"$${condition} ? $${true} : $${false}\n!!{cursor}"
+	},
+	
+	{
+		"name":"try/catch",
+		"trigger":"tc",
+		"usage":"tc",
+		"description":"Make try/catch",
+		"template":"try{\n!!{cursor}\n}\n}catch(e){\n\n}"
+	},
+	
+	{
+		"name":"try/catch/finally",
+		"trigger":"tcf",
+		"usage":"tcf",
+		"description":"Make try/catch",
+		"template":"try{\n!!{cursor}\n}\n}catch(e){\n\n}finally{\n}\n}"
+	},
+	
+	{
+		"name":"While",
+		"trigger":"w",
+		"usage":"w",
+		"description":"Make While",
+		"template":"while ($${condition}) {\n!!{cursor}\n}"
+	},
+	
+	{
+		"name":"For",
+		"trigger":"for",
+		"usage":"for",
+		"description":"Make For",
+		"template":"for (int $${i} = 0; $${i} < $${max}; $${i}++) {\n!!{cursor}\n}"
+	},
+	
+	{
+		"name":"ForIn",
+		"trigger":"fi",
+		"usage":"fi",
+		"description":"Make ForIn",
+		"template":"for ($${e} in $${elements}) {\n!!{cursor}\n}"
+	},
+	
+	{
+		"name":"Closures each",
+		"trigger":"ce",
+		"usage":"ce",
+		"description":"Make Closures each",
+		"template":"$${list}.each() { println \" ${it}\"!!{cursor} }"
+	},
+	
+	{
+		"name":"Closures eachWithIndex",
+		"trigger":"cei",
+		"usage":"cei",
+		"description":"Make Closures eachWithIndex",
+		"template":"$${list}.eachWithIndex() {obj, i -> println \" ${i}: ${obj}\"!!{cursor} }"
+	},
+	
+	{
+		"name":"print",
+		"trigger":"p",
+		"usage":"p",
+		"description":"Make Print",
+		"template":"print \"!!{cursor}\""
+	},
+	
+	{
+		"name":"println",
+		"trigger":"pln",
+		"usage":"pln",
+		"description":"Make Print",
+		"template":"println \"!!{cursor}\""
+	},
+	
+	{
+		"name":"Thread",
+		"trigger":"th",
+		"usage":"th",
+		"description":"Make Thread",
+		"template":"def $${th} = Thread.start {\n !!{cursor} }\n$${th}.join()"
+	},
+	
+	{
+		"name":"synchronized",
+		"trigger":"syn",
+		"usage":"syn",
+		"description":"Make Method synchronized",
+		"template": "synchronized $${name}() {\n!!{cursor}\n}"
+	}
+	
+]
