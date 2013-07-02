@@ -16,7 +16,7 @@
     {
         "name": "For Each",
         "trigger": "foreach",
-        "usage": "for itemList item",
+        "usage": "foreach itemList item",
         "description": "Create a javascript foreach loop",
         "template": "$${container}.foreach(function ($${subject}) {\n!!{cursor}\n});"
     },
