@@ -1,0 +1,33 @@
+[
+    {
+        "name": "controller",
+        "trigger": ".con",
+        "usage": ".con myController",
+        "description": "Creates a controller with DI function",
+        "template": ".controller(\"$${name}\", [\"$scope\", function ($scope) {\n!!{cursor}\n}])"
+    },{
+        "name": "directive",
+        "trigger": ".dir",
+        "usage": ".dir myDirective",
+        "description": "Creates a directive with DI function",
+        "template": "directive.snippet"
+    },{
+        "name": "filter",
+        "trigger": ".fil",
+        "usage": ".fil myFilter",
+        "description": "Creates a filter with DI function",
+        "template": "filter.snippet"
+    },{
+        "name": "service",
+        "trigger": ".ser",
+        "usage": ".ser myService",
+        "description": "Creates a service with DI function",
+        "template": ".service(\"$${name}\", [function () {\n!!{cursor}\n}])"
+    },{
+        "name": "route",
+        "trigger": ".when route",
+        "usage": ".when",
+        "description": "Creates a route for use with $routeProvider.when()",
+        "template": "route.snippet"
+    }
+]
