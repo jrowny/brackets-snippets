@@ -302,6 +302,10 @@ define(function (require, exports, module) {
                             function (entries) {
                                 var i, loading = [], len = entries.length;
                                 for (i = 0; i < len; i++) {
+                                    if (entries[i].name.charAt(0) === ".") {
+                                        //ignore dotfiles
+                                        return
+                                    }
                                     loading.push(loadSnippet(entries[i]));
                                 }
                                 $.when.apply(module, loading).done(finalizeSnippetsTable);
