@@ -295,6 +295,7 @@ define(function (require, exports, module) {
                 if (config.dataDirectory.indexOf("/") !== -1 || config.dataDirectory.indexOf("\\") !== -1) {
                     directory = config.dataDirectory;
                 }
+
                 //loop through the directory to load snippets
                 NativeFileSystem.requestNativeFileSystem(directory,
                     function (rootEntry) {
@@ -304,7 +305,7 @@ define(function (require, exports, module) {
                                 for (i = 0; i < len; i++) {
                                     if (entries[i].name.charAt(0) === ".") {
                                         //ignore dotfiles
-                                        return
+                                        continue;
                                     }
                                     loading.push(loadSnippet(entries[i]));
                                 }
