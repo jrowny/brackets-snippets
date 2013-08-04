@@ -11,20 +11,27 @@
         "trigger": "for",
         "usage": "for x someArray",
         "description": "Create a javascript for loop",
-        "template": "var $${iterator};\nfor ($${iterator} = 0; $${iterator} < $${container}.length; $${iterator}++) {\n!!{cursor}\n}"
+        "template": "var $${iterator};\nvar $${limit} = $${container}.length\nfor ($${iterator} = 0; $${iterator} < $${limit}; $${iterator}++) {\n!!{cursor}\n}"
     },
     {
         "name": "For Each",
         "trigger": "foreach",
         "usage": "foreach itemList item",
         "description": "Create a javascript foreach loop",
-        "template": "$${container}.foreach(function ($${subject}) {\n!!{cursor}\n});"
+        "template": "$${container}.forEach(function ($${subject}) {\n!!{cursor}\n});"
     },
     {
         "name": "Requires",
         "trigger": "req",
-        "usage": "req Editor editor\\Editor",
+        "usage": "req reference module",
         "description": "Create a javascript requires block",
         "template": "var $${name} = require(\"$${path}\");"
+    },
+    {
+        "name": "Immediately-Invoked Function",
+        "trigger": "iife",
+        "usage": "iife",
+        "description": "Create a javascript immediately-invoked function",
+        "template": "(function () {\n\"use strict\";\n\n!!{cursor}\n}());"
     }
 ]
