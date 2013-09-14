@@ -69,3 +69,8 @@
     margin-right: 20px;
     font-size: 90%;
 }
+
+#snippets-enable-icon {
+    background-image: url(icon.png);
+}
+
