@@ -282,8 +282,6 @@ define(function (require, exports, module) {
             })
             .click(_handleHideSnippets)
             .appendTo($("#main-toolbar .buttons"));
-console.log('DID ICON');
-console.dir($icon);
         
         //add the keybinding
         KeyBindingManager.addBinding(SNIPPET_EXECUTE, "Ctrl-Alt-V");
