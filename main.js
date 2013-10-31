@@ -262,6 +262,9 @@ define(function (require, exports, module) {
     CommandManager.register("Show Snippets", VIEW_HIDE_SNIPPETS, _handleHideSnippets);
     
     function init() {
+
+        var $icon;
+
         //add the HTML UI
         setupSnippets();
         
@@ -270,6 +273,15 @@ define(function (require, exports, module) {
         //add the menu and keybinding for view/hide
         var menu = Menus.getMenu(Menus.AppMenuBar.VIEW_MENU);
         menu.addMenuItem(VIEW_HIDE_SNIPPETS, "Ctrl-Shift-S", Menus.AFTER, Commands.VIEW_HIDE_SIDEBAR);
+
+        // Add toolbar icon 
+        $icon = $("<a>")
+            .attr({
+                id: "snippets-enable-icon",
+                href: "#"
+            })
+            .click(_handleHideSnippets)
+            .appendTo($("#main-toolbar .buttons"));
         
         //add the keybinding
         KeyBindingManager.addBinding(SNIPPET_EXECUTE, "Ctrl-Alt-V");
