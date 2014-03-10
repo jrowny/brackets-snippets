@@ -237,9 +237,20 @@ define(function (require, exports, module) {
             var i,
                 triggers = _.pluck(snippets, "trigger");
             //go in backwards order for a case there is an inline snippet along the way
-            for (i = props.length; i > 0; i--) {
-                var io = triggers.indexOf(props[i]);
-                if (io !== -1 && snippets[io].inline) {
+            for (i = props.length - 1; i > 0; i--) {
+
+                var io,
+                    requireInline = true;
+
+                // launch non-inline in inline mode snippets when %trigger is found
+                if (props[i][0] === "%") {
+                    requireInline = false;
+                    io = triggers.indexOf(props[i].substring(1));
+                } else {
+                    io = triggers.indexOf(props[i]);
+                }
+
+                if (io !== -1 && (snippets[io].inline || !requireInline)) {
                     // found inline snippet
                     preInline = props.slice(0, i);
                     props = props.slice(i);
