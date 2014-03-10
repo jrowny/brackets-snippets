@@ -52,8 +52,11 @@
     font-weight: bold;
     font-height: 20px;
     color: #999;
-    float: right;
     margin-right: 5px;
+}
+
+#snippets .toolbar .snippets-settings {
+    margin-right: 50px;
 }
 
 #snippets .toolbar .snippets-close:hover {
