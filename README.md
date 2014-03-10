@@ -1,7 +1,11 @@
 brackets-snippets
 =================
 
-A brackets snippets extension. To install, go to Extension Manager, install from URL and enter `https://github.com/jrowny/brackets-snippets`
+Brackets Snippets extension.
+
+Extension is available in the [Brackets extension registry](https://brackets-registry.aboutweb.com/).
+
+To install, go to the Brackets Extension Manager and search for `brackets snippets`.
 
 Usage
 =====
