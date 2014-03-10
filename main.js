@@ -39,6 +39,8 @@ define(function (require, exports, module) {
 
     // Local modules
     var InlineSnippetForm = require("InlineSnippetForm"),
+        Preferences       = require("src/Preferences"),
+        SettingsDialog    = require("src/SettingsDialog"),
         SnippetPresets    = require("SnippetPresets"),
         panelHtml         = require("text!templates/bottom-panel.html"),
         snippetsHTML      = require("text!templates/snippets-table.html");
@@ -207,9 +209,13 @@ define(function (require, exports, module) {
         
         $snippetsPanel = $('#snippets');
         $snippetsContent = $snippetsPanel.find(".resizable-content");
-        $snippetsPanel.find(".snippets-close").click(function () {
-            CommandManager.execute(VIEW_HIDE_SNIPPETS);
-        });
+        $snippetsPanel
+            .on("click", ".snippets-settings", function () {
+                SettingsDialog.show();
+            })
+            .on("click", ".snippets-close", function () {
+                CommandManager.execute(VIEW_HIDE_SNIPPETS);
+            });
     }
     
     function finalizeSnippetsTable() {
@@ -257,7 +263,7 @@ define(function (require, exports, module) {
             });
         return result;
     }
-    	
+
     CommandManager.register("Run Snippet", SNIPPET_EXECUTE, _handleSnippet);
     CommandManager.register("Show Snippets", VIEW_HIDE_SNIPPETS, _handleHideSnippets);
     
@@ -272,7 +278,7 @@ define(function (require, exports, module) {
         
         //add the menu and keybinding for view/hide
         var menu = Menus.getMenu(Menus.AppMenuBar.VIEW_MENU);
-        menu.addMenuItem(VIEW_HIDE_SNIPPETS, "Ctrl-Shift-S", Menus.AFTER, Commands.VIEW_HIDE_SIDEBAR);
+        menu.addMenuItem(VIEW_HIDE_SNIPPETS, Preferences.get("showSnippetsPanelShortcut"), Menus.AFTER, Commands.VIEW_HIDE_SIDEBAR);
 
         // Add toolbar icon 
         $icon = $("<a>")
@@ -284,7 +290,7 @@ define(function (require, exports, module) {
             .appendTo($("#main-toolbar .buttons"));
         
         //add the keybinding
-        KeyBindingManager.addBinding(SNIPPET_EXECUTE, "Ctrl-Alt-V");
+        KeyBindingManager.addBinding(SNIPPET_EXECUTE, Preferences.get("triggerSnippetShortcut"));
                 
         //snippet module's directory
         var moduleDir = FileUtils.getNativeModuleDirectoryPath(module);
