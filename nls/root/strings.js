@@ -12,5 +12,5 @@ define({
     SHORTCUTS:                          "Shortcuts",
     SHORTCUTS_HINT:                     "Separate keys with - like this: Ctrl-Alt-Space",
     SHOW_SNIPPET_PANEL:                 "Show snippets panel",
-    SNIPPETS_SETTINGS:                  "Snippets Settings\u2026"
+    SNIPPETS_SETTINGS:                  "Snippets Settings"
 });

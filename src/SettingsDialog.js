@@ -50,10 +50,6 @@ define(function (require, exports) {
     function init() {
         setValues(Preferences.getAll());
         assignActions();
-        $dialog.find(".nav-tabs a").click(function (e) {
-            e.preventDefault();
-            $(this).tab("show");
-        });
     }
 
     function showRestartDialog() {
