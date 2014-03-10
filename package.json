@@ -1,9 +1,16 @@
 {
     "name": "jrowny.brackets.snippets",
     "title": "Brackets Snippets",
+    "description": "Provides ability to use code snippets in Brackets.",
     "homepage": "https://github.com/jrowny/brackets-snippets",
+    "license": "MIT",
+
     "author": "Jonathan Rowny",
-    "version": "1.0.0",
-    "engines": { "brackets": ">=0.24" },
-    "description": "A simple brackets snippets extension."
+    "version": "1.1.0-dev",
+    "engines": { "brackets": ">=0.36" },
+
+    "devDependencies": {
+        "grunt": "latest",
+        "grunt-contrib-jshint": "latest"
+    }
 }
