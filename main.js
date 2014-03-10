@@ -75,6 +75,35 @@ define(function (require, exports, module) {
         
         return result.promise();
     }
+
+    function _parseArgs(str) {
+        str = str.trim();
+
+        var result = [],
+            current = "",
+            inQuotes = false,
+            quotes = ['"', "'"];
+
+        for (var i = 0, l = str.length; i < l; i++) {
+            if (str[i] === " " && inQuotes === false) {
+                if (current.length > 0) {
+                    result.push(current);
+                    current = "";
+                }
+                continue;
+            }
+            if (inQuotes && str[i] === inQuotes) {
+                inQuotes = false;
+            }
+            if (current.length === 0 && quotes.indexOf(str[i]) !== -1) {
+                inQuotes = str[i];
+            }
+            current += str[i];
+        }
+        result.push(current);
+
+        return result;
+    }
         
     function _handleSnippet(props) {
         var editor = EditorManager.getCurrentFullEditor();
@@ -82,7 +111,7 @@ define(function (require, exports, module) {
         var pos = editor.getCursorPos();
         var line = document.getLine(pos.line);
         if (!props) {
-            props = $.trim(line).split(" ");
+            props = _parseArgs(line);
         }
         
         //we don't need to see the trigger text
