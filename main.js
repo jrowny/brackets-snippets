@@ -92,11 +92,13 @@ define(function (require, exports, module) {
             var s,
                 x,
                 cursorPos,
+                cursorOffset,
                 lines = output.split("\n");
            
             //figure out cursor pos, remove cursor marker
             for (s = 0; s < lines.length; s++) {
-                if (lines[s].indexOf('!!{cursor}') >= 0) {
+                cursorOffset = lines[s].indexOf('!!{cursor}');
+                if (cursorOffset >= 0) {
                     cursorPos = s;
                     output = output.replace('!!{cursor}', '');
                     break;
@@ -106,10 +108,8 @@ define(function (require, exports, module) {
             //do insertion
             document.replaceRange(output + "\n", {line: pos.line, ch: 0}, {line: pos.line, ch: 0});
             
-            //set curosr
-            if (cursorPos) {
-                editor._codeMirror.setCursor(pos.line + cursorPos, pos.ch);
-            }
+            //set cursor
+            editor._codeMirror.setCursor(pos.line + cursorPos, cursorOffset);
             
             //indent lines
             for (x = 0; x < lines.length; x++) {
