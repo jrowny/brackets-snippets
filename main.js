@@ -22,16 +22,19 @@
  */
 
 /*jslint vars: true, plusplus: true, devel: true, nomen: true, indent: 4, maxerr: 50 */
-/*global define, brackets, $, Mustache, window */
+/*global define, brackets, $, Mustache */
+
 
 define(function (require, exports, module) {
-    'use strict';
-    var Commands                = brackets.getModule("command/Commands"),
+
+    var _                       = brackets.getModule("thirdparty/lodash"),
+        AppInit                 = brackets.getModule("utils/AppInit"),
+        Commands                = brackets.getModule("command/Commands"),
         CommandManager          = brackets.getModule("command/CommandManager"),
         EditorManager           = brackets.getModule("editor/EditorManager"),
         DocumentManager         = brackets.getModule("document/DocumentManager"),
         ExtensionUtils          = brackets.getModule("utils/ExtensionUtils"),
-        NativeFileSystem        = brackets.getModule("file/NativeFileSystem").NativeFileSystem,
+        FileSystem              = brackets.getModule("filesystem/FileSystem"),
         KeyBindingManager       = brackets.getModule("command/KeyBindingManager"),
         FileUtils               = brackets.getModule("file/FileUtils"),
         Menus                   = brackets.getModule("command/Menus"),
@@ -48,7 +51,7 @@ define(function (require, exports, module) {
         //Snippets array
     var snippets = [],
         //directory where snippets are
-        directory = "",
+        snippetsDirectory = Preferences.get("snippetsDirectory").replace(/\\/g, "/"),
         $snippetsPanel,
         $snippetsContent,
         panel;
@@ -203,14 +206,23 @@ define(function (require, exports, module) {
             }
         }
                 
-        function readSnippetFromFile(fieName) {
-            var snippetFile = new NativeFileSystem.FileEntry(directory + '/snippets/' + fieName);
-            FileUtils.readAsText(snippetFile)
-                .done(function (text, readTimestamp) {
+        function readSnippetFromFile(fileName) {
+            var snippetFilePath = snippetsDirectory + '/snippets/' + fileName;
+            FileSystem.resolve(snippetFilePath, function (err, snippetFile) {
+                if (err) {
+                    FileUtils.showFileOpenError(err, snippetFilePath);
+                    return;
+                }
+
+                snippetFile.read(function (err, text) {
+                    if (err) {
+                        FileUtils.showFileOpenError(err, snippetFile.fullPath);
+                        return;
+                    }
+
                     startInsert(SnippetPresets.execute(text));
-                }).fail(function (error) {
-                    FileUtils.showFileOpenError(error.code, snippetFile);
                 });
+            });
         }
         
         if (props.length) {
@@ -262,47 +274,79 @@ define(function (require, exports, module) {
             CommandManager.execute(SNIPPET_EXECUTE, [$(this).attr('data-trigger')]);
         });
         $snippetsPanel.find('.snippets-source').on('click', function () {
-            CommandManager.execute(Commands.FILE_OPEN, { fullPath: directory + "/" + $(this).attr('data-source') });
+            CommandManager.execute(Commands.FILE_OPEN, { fullPath: snippetsDirectory + "/" + $(this).attr('data-source') });
         });
     }
             
     //parse a JSON file with a snippet in it
     function loadSnippet(fileEntry) {
         var result = new $.Deferred();
-        if (fileEntry.isDirectory) {
-            return;
-        }
-        FileUtils.readAsText(fileEntry)
-            .done(function (text, readTimestamp) {
-                try {
-                    //TODO: a better check for valid snippets
-                    var newSnippets = JSON.parse(text);
-                    newSnippets.forEach(function (item) {
-                        item.source = fileEntry.name;
-                    });
-                    result.resolve(newSnippets);
-                } catch (e) {
-                    console.log("Can't parse snippets from " + fileEntry.fullPath);
-                    result.reject("Can't parse snippets from " + fileEntry.fullPath);
-                }
-            })
-            .fail(function (error) {
-                FileUtils.showFileOpenError(error.name, fileEntry.fullPath);
-                result.reject(error.name + ": " + fileEntry.fullPath);
-            });
+        fileEntry.read(function (err, text) {
+            if (err) {
+                FileUtils.showFileOpenError(err, fileEntry.fullPath);
+                result.reject(err);
+                return;
+            }
+
+            try {
+                //TODO: a better check for valid snippets
+                var newSnippets = JSON.parse(text);
+                newSnippets.forEach(function (item) {
+                    item.source = fileEntry.name;
+                });
+                result.resolve(newSnippets);
+            } catch (err) {
+                console.error("Can't parse snippets from " + fileEntry.fullPath + " - " + err);
+                result.reject(err);
+            }
+        });
         return result;
     }
 
     CommandManager.register("Run Snippet", SNIPPET_EXECUTE, _handleSnippet);
     CommandManager.register("Show Snippets", VIEW_HIDE_SNIPPETS, _handleHideSnippets);
     
-    function init() {
+    function loadSnippets() {
+        if (!FileSystem.isAbsolutePath(snippetsDirectory)) {
+            snippetsDirectory = FileUtils.getNativeModuleDirectoryPath(module) + "/" + snippetsDirectory;
+        }
+        //loop through the directory to load snippets
+        FileSystem.resolve(snippetsDirectory, function (err, rootEntry) {
+            if (err) {
+                console.error("[Snippets] Error -- could not open snippets directory: " + snippetsDirectory);
+                console.error(err);
+                return;
+            }
 
-        var $icon;
+            rootEntry.getContents(function (err, entries) {
+                if (err) {
+                    console.error("[Snippets] Error -- could not read snippets directory: " + snippetsDirectory);
+                    console.error(err);
+                    return;
+                }
 
+                var loading = _.compact(entries.map(function (entry) {
+                    if (entry.name.charAt(0) === ".") {
+                        //ignore dotfiles
+                        return;
+                    }
+                    if (entry.isDirectory) {
+                        //ignore directories
+                        return;
+                    }
+                    return loadSnippet(entry);
+                }));
+
+                $.when.apply(module, loading).done(finalizeSnippetsTable);
+            });
+        });
+    }
+
+    AppInit.appReady(function () {
         //add the HTML UI
         setupSnippets();
         
+        //load css
         ExtensionUtils.loadStyleSheet(module, "snippets.css");
         
         //add the menu and keybinding for view/hide
@@ -310,7 +354,7 @@ define(function (require, exports, module) {
         menu.addMenuItem(VIEW_HIDE_SNIPPETS, Preferences.get("showSnippetsPanelShortcut"), Menus.AFTER, Commands.VIEW_HIDE_SIDEBAR);
 
         // Add toolbar icon 
-        $icon = $("<a>")
+        $("<a>")
             .attr({
                 id: "snippets-enable-icon",
                 href: "#"
@@ -321,59 +365,8 @@ define(function (require, exports, module) {
         //add the keybinding
         KeyBindingManager.addBinding(SNIPPET_EXECUTE, Preferences.get("triggerSnippetShortcut"));
                 
-        //snippet module's directory
-        var moduleDir = FileUtils.getNativeModuleDirectoryPath(module);
-        var configFile = new NativeFileSystem.FileEntry(moduleDir + '/config.js');
-  
-        FileUtils.readAsText(configFile)
-            .done(function (text, readTimestamp) {
-                var config = {};
-                
-                //try to parse the config file
-                try {
-                    config = JSON.parse(text);
-                } catch (e) {
-                    console.log("Can't parse config.js - " + e);
-                    config.dataDirectory = "data";
-                }
-                directory = moduleDir + "/" + config.dataDirectory;
-                
-                //Look for any marker of a non relative path
-                if (config.dataDirectory.indexOf("/") !== -1 || config.dataDirectory.indexOf("\\") !== -1) {
-                    directory = config.dataDirectory;
-                }
-
-                //loop through the directory to load snippets
-                NativeFileSystem.requestNativeFileSystem(directory,
-                    function (rootEntry) {
-                        rootEntry.root.createReader().readEntries(
-                            function (entries) {
-                                var i, loading = [], len = entries.length;
-                                for (i = 0; i < len; i++) {
-                                    if (entries[i].name.charAt(0) === ".") {
-                                        //ignore dotfiles
-                                        continue;
-                                    }
-                                    loading.push(loadSnippet(entries[i]));
-                                }
-                                $.when.apply(module, loading).done(finalizeSnippetsTable);
-                            },
-                            function (error) {
-                                console.log("[Snippets] Error -- could not read snippets directory: " + directory);
-                            }
-                        );
-                    },
-                    function (error) {
-                        console.log("[Snippets] Error -- could not open snippets directory: " + directory);
-                    });
-           
-            })
-            .fail(function (error) {
-                FileUtils.showFileOpenError(error.code, configFile);
-            });
-
-    }
-    
-    init();
+        //load snippets
+        loadSnippets();
+    });
     
 });

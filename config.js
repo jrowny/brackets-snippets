@@ -1,3 +1,0 @@
-{
-	"dataDirectory": "data"
-}

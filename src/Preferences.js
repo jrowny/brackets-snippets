@@ -9,6 +9,7 @@ define(function (require, exports, module) {
         prefs               = PreferencesManager.getExtensionPrefs(PREFERENCES_KEY);
 
     var defaultPreferences = {
+        "snippetsDirectory": {                   "type": "string",            "value": "data"               },
         "triggerSnippetShortcut": {              "type": "string",            "value": "Ctrl-Alt-Space"     },
         "showSnippetsPanelShortcut": {           "type": "string",            "value": ""                   }
     };
