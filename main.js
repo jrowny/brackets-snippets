@@ -110,11 +110,12 @@ define(function (require, exports, module) {
     }
 
     function _handleSnippet(props) {
-        var editor    = EditorManager.getCurrentFullEditor(),
-            document  = DocumentManager.getCurrentDocument(),
-            pos       = editor.getCursorPos(),
-            line      = document.getLine(pos.line),
-            preInline = [];
+        var editor     = EditorManager.getCurrentFullEditor(),
+            document   = DocumentManager.getCurrentDocument(),
+            pos        = editor.getCursorPos(),
+            line       = document.getLine(pos.line),
+            preInline  = null,
+            postInline = null;
 
         if (!props) {
             props = _parseArgs(line);
@@ -127,8 +128,11 @@ define(function (require, exports, module) {
                 cursorOffset;
 
             // add back text that was found before inline snippet
-            if (preInline.length > 0) {
+            if (preInline) {
                 output = preInline.join(" ") + " " + output;
+            }
+            if (postInline) {
+                output = output + " " + postInline.join(" ");
             }
 
             var lines = output.split("\n");
@@ -175,16 +179,26 @@ define(function (require, exports, module) {
                 }
             }
             
-            //if the same number of variables
-            if (props.length - 1 >= snippetVariables.length) {
-                var x;
-                for (x = 0; x < snippetVariables.length; x++) {
+            var variablesDifference = props.length - 1 - snippetVariables.length;
+
+            if (variablesDifference > 0) {
+                // we have more variables than we require
+                var mid = snippetVariables.length + 1;
+                postInline = props.slice(mid);
+                props = props.slice(0, mid);
+                variablesDifference = 0;
+            }
+
+            if (variablesDifference === 0) {
+                // we have exactly as many variables as we need
+                for (var x = 0; x < snippetVariables.length; x++) {
                     //even my escapes have escapes
                     var re = new RegExp(snippetVariables[x].replace('$${', '\\$\\$\\{').replace('}', '\\}'), 'g');
                     output = output.replace(re, props[x + 1]);
                 }
                 completeInsert(editor, pos, output);
             } else {
+                // we have less variables than we need
                 var snippetPromise,
                     result = new $.Deferred();
                 snippetPromise = inlineSnippetFormProvider(editor, snippetVariables, output);
