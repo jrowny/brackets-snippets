@@ -40,10 +40,10 @@ define(function (require, exports, module) {
         PanelManager            = brackets.getModule("view/PanelManager");
 
     // Local modules
-    var InlineSnippetForm = require("InlineSnippetForm"),
+    var InlineSnippetForm = require("src/InlineSnippetForm"),
         Preferences       = require("src/Preferences"),
         SettingsDialog    = require("src/SettingsDialog"),
-        SnippetPresets    = require("SnippetPresets"),
+        SnippetPresets    = require("src/SnippetPresets"),
         panelHtml         = require("text!templates/bottom-panel.html"),
         snippetsHTML      = require("text!templates/snippets-table.html");
         
@@ -382,7 +382,7 @@ define(function (require, exports, module) {
         setupSnippets();
         
         //load css
-        ExtensionUtils.loadStyleSheet(module, "snippets.css");
+        ExtensionUtils.loadStyleSheet(module, "styles/snippets.css");
         
         //add the menu and keybinding for view/hide
         var menu = Menus.getMenu(Menus.AppMenuBar.VIEW_MENU);
