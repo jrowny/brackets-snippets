@@ -259,6 +259,10 @@ define(function (require, exports, module) {
                 }
             }
             //no inline snippet found so look for any snippet that matches props[0]
+            //it can also have % as a prefix so remove
+            if (props[0][0] === "%") {
+                props[0] = props[0].substring(1);
+            }
             var snippet = _.find(snippets, function (s) {
                 return s.trigger === props[0];
             });
