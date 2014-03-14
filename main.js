@@ -24,7 +24,6 @@
 /*jslint vars: true, plusplus: true, devel: true, nomen: true, indent: 4, maxerr: 50 */
 /*global define, brackets, $, Mustache */
 
-
 define(function (require, exports, module) {
 
     var _                       = brackets.getModule("thirdparty/lodash"),
@@ -41,10 +40,10 @@ define(function (require, exports, module) {
         PanelManager            = brackets.getModule("view/PanelManager");
 
     // Local modules
-    var InlineSnippetForm = require("InlineSnippetForm"),
+    var InlineSnippetForm = require("src/InlineSnippetForm"),
         Preferences       = require("src/Preferences"),
         SettingsDialog    = require("src/SettingsDialog"),
-        SnippetPresets    = require("SnippetPresets"),
+        SnippetPresets    = require("src/SnippetPresets"),
         panelHtml         = require("text!templates/bottom-panel.html"),
         snippetsHTML      = require("text!templates/snippets-table.html");
         
@@ -109,25 +108,34 @@ define(function (require, exports, module) {
 
         return result;
     }
-        
+
     function _handleSnippet(props) {
-        var editor = EditorManager.getCurrentFullEditor();
-        var document = DocumentManager.getCurrentDocument();
-        var pos = editor.getCursorPos();
-        var line = document.getLine(pos.line);
+        var editor     = EditorManager.getCurrentFullEditor(),
+            document   = DocumentManager.getCurrentDocument(),
+            pos        = editor.getCursorPos(),
+            line       = document.getLine(pos.line),
+            preInline  = null,
+            postInline = null;
+
         if (!props) {
             props = _parseArgs(line);
         }
-        
-        //we don't need to see the trigger text
-        CommandManager.execute(Commands.EDIT_DELETE_LINES);
-        
+
         function completeInsert(editor, pos, output) {
             var s,
                 x,
                 cursorPos,
-                cursorOffset,
-                lines = output.split("\n");
+                cursorOffset;
+
+            // add back text that was found before inline snippet
+            if (preInline) {
+                output = preInline.join(" ") + " " + output;
+            }
+            if (postInline) {
+                output = output + " " + postInline.join(" ");
+            }
+
+            var lines = output.split("\n");
            
             //figure out cursor pos, remove cursor marker
             for (s = 0; s < lines.length; s++) {
@@ -138,7 +146,7 @@ define(function (require, exports, module) {
                     break;
                 }
             }
-                                    
+
             //do insertion
             document.replaceRange(output + "\n", {line: pos.line, ch: 0}, {line: pos.line, ch: 0});
             
@@ -154,6 +162,9 @@ define(function (require, exports, module) {
             EditorManager.focusEditor();
         }
         function startInsert(output) {
+            //we don't need to see the trigger text
+            CommandManager.execute(Commands.EDIT_DELETE_LINES);
+
             //find variables
             var tmp = output.match(/\$\$\{[0-9A-Z_a-z]{1,32}\}/g);
              //remove duplicate variables
@@ -168,16 +179,26 @@ define(function (require, exports, module) {
                 }
             }
             
-            //if the same number of variables
-            if (props.length - 1 >= snippetVariables.length) {
-                var x;
-                for (x = 0; x < snippetVariables.length; x++) {
+            var variablesDifference = props.length - 1 - snippetVariables.length;
+
+            if (variablesDifference > 0) {
+                // we have more variables than we require
+                var mid = snippetVariables.length + 1;
+                postInline = props.slice(mid);
+                props = props.slice(0, mid);
+                variablesDifference = 0;
+            }
+
+            if (variablesDifference === 0) {
+                // we have exactly as many variables as we need
+                for (var x = 0; x < snippetVariables.length; x++) {
                     //even my escapes have escapes
                     var re = new RegExp(snippetVariables[x].replace('$${', '\\$\\$\\{').replace('}', '\\}'), 'g');
                     output = output.replace(re, props[x + 1]);
                 }
                 completeInsert(editor, pos, output);
             } else {
+                // we have less variables than we need
                 var snippetPromise,
                     result = new $.Deferred();
                 snippetPromise = inlineSnippetFormProvider(editor, snippetVariables, output);
@@ -227,16 +248,44 @@ define(function (require, exports, module) {
         
         if (props.length) {
             //try to find the snippet, given the trigger text
-            var i;
-            for (i = 0; i < snippets.length; i++) {
-                if (snippets[i].trigger === props[0]) {
-                    var output = snippets[i].template;
-                    if (output.indexOf('.snippet') === output.length - 8) {
-                        readSnippetFromFile(output);
-                    } else {
-                        startInsert(SnippetPresets.execute(output));
-                    }
-                    break;
+            var i,
+                triggers = _.pluck(snippets, "trigger");
+            //go in backwards order for a case there is an inline snippet along the way
+            for (i = props.length - 1; i > 0; i--) {
+
+                var io,
+                    requireInline = true;
+
+                // launch non-inline in inline mode snippets when %trigger is found
+                if (props[i][0] === "%") {
+                    requireInline = false;
+                    io = triggers.indexOf(props[i].substring(1));
+                } else {
+                    io = triggers.indexOf(props[i]);
+                }
+
+                if (io !== -1 && (snippets[io].inline || !requireInline)) {
+                    // found inline snippet
+                    preInline = props.slice(0, i);
+                    props = props.slice(i);
+                    startInsert(SnippetPresets.execute(snippets[io].template));
+                    return;
+                }
+            }
+            //no inline snippet found so look for any snippet that matches props[0]
+            //it can also have % as a prefix so remove
+            if (props[0][0] === "%") {
+                props[0] = props[0].substring(1);
+            }
+            var snippet = _.find(snippets, function (s) {
+                return s.trigger === props[0];
+            });
+            if (snippet) {
+                var output = snippet.template;
+                if (output.indexOf('.snippet') === output.length - 8) {
+                    readSnippetFromFile(output);
+                } else {
+                    startInsert(SnippetPresets.execute(output));
                 }
             }
         }
@@ -347,7 +396,7 @@ define(function (require, exports, module) {
         setupSnippets();
         
         //load css
-        ExtensionUtils.loadStyleSheet(module, "snippets.css");
+        ExtensionUtils.loadStyleSheet(module, "styles/snippets.css");
         
         //add the menu and keybinding for view/hide
         var menu = Menus.getMenu(Menus.AppMenuBar.VIEW_MENU);

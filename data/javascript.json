@@ -11,7 +11,7 @@
         "trigger": "for",
         "usage": "for x someArray",
         "description": "Create a javascript for loop",
-        "template": "var $${iterator};\nvar $${limit} = $${container}.length\nfor ($${iterator} = 0; $${iterator} < $${limit}; $${iterator}++) {\n!!{cursor}\n}"
+        "template": "var $${iterator};\nvar $${limit} = $${container}.length;\nfor ($${iterator} = 0; $${iterator} < $${limit}; $${iterator}++) {\n!!{cursor}\n}"
     },
     {
         "name": "For Each",
@@ -33,5 +33,13 @@
         "usage": "iife",
         "description": "Create a javascript immediately-invoked function",
         "template": "(function () {\n\"use strict\";\n\n!!{cursor}\n}());"
+    },
+    {
+        "name": "Sample inline script for console logging",
+        "trigger": "log",
+        "usage": "log x",
+        "description": "Log a message into console",
+        "template": "console.log($${message});!!{cursor}",
+        "inline": true
     }
 ]
