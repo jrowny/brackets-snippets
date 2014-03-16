@@ -1,15 +1,17 @@
-/*global $, brackets, define, Mustache */
-
 define(function (require, exports) {
     "use strict";
 
-    var CommandManager             = brackets.getModule("command/CommandManager"),
-        Dialogs                    = brackets.getModule("widgets/Dialogs"),
-        Preferences                = require("./Preferences"),
-        Strings                    = require("../strings"),
-        settingsDialogTemplate     = require("text!templates/settings-dialog.html"),
-        questionDialogTemplate     = require("text!templates/question-dialog.html");
+    // Brackets modules
+    var CommandManager          = brackets.getModule("command/CommandManager"),
+        Dialogs                 = brackets.getModule("widgets/Dialogs");
 
+    // Dependencies
+    var Preferences             = require("./Preferences"),
+        Strings                 = require("../strings"),
+        settingsDialogTemplate  = require("text!templates/settings-dialog.html"),
+        questionDialogTemplate  = require("text!templates/question-dialog.html");
+
+    // Module variables
     var dialog,
         $dialog;
 

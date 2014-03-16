@@ -9,7 +9,7 @@
     "noarg": true,
     "noempty": true,
     "nonew": true,
-    "quotmark": false,
+    "quotmark": "double",
     "undef": true,
     "unused": true,
     "strict": false,
@@ -31,6 +31,8 @@
     "white": true,
 
     "globals": {
-
+        "define": true,
+        "brackets": true,
+        "Mustache": true
     }
 }

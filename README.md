@@ -32,6 +32,11 @@ for (x = 0; x < myArray.length; x++) {
 
 If you omit parameters, an inline form will appear. Use `ESC` to close the inline form or `ENTER` to complete the insertion.
 
-Adding Snippets
-===============
-You can create new JSON files in the ```data``` directory or you can edit the existing ```javascript.json``` file. Your JSON files can reference template files if they have a `.snippet` extension and are in the `data\snippets` directory. See html5.snippet for an example.
+Own snippets
+============
+
+It's recommended to copy data directory from extension to your own place and link to it through settings dialog.
+You can edit the data directory inside the extension __but this will be overridden on every extension update__.
+
+You can create new JSON files in the ```data``` directory or you can edit the existing ```javascript.json``` file.
+Your JSON files can reference template files if they have a `.snippet` extension and are in the `data\snippets` directory. See html5.snippet for an example.
