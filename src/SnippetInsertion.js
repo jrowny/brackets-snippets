@@ -3,7 +3,6 @@ define(function (require, exports) {
 
     // Brackets modules
     var _                 = brackets.getModule("thirdparty/lodash"),
-        Commands          = brackets.getModule("command/Commands"),
         CommandManager    = brackets.getModule("command/CommandManager"),
         DocumentManager   = brackets.getModule("document/DocumentManager"),
         EditorManager     = brackets.getModule("editor/EditorManager"),
@@ -218,7 +217,7 @@ define(function (require, exports) {
                     context.editor.addInlineWidget(newPos, inlineWidget);
 
                     var inlineComplete = function () {
-                        context.templateVariables.forEach(function (variable, index) {
+                        context.templateVariables.forEach(function (variable) {
                             var re = new RegExp(variable.replace("$${", "\\$\\$\\{").replace("}", "\\}"), "g"),
                                 variableNormalized = variable.replace("$${", "").replace("}", ""),
                                 variableValue = inlineWidget.$form.find(".snipvar-" + variableNormalized).val();

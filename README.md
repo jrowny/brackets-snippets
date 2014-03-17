@@ -32,6 +32,8 @@ for (x = 0; x < myArray.length; x++) {
 
 If you omit parameters, an inline form will appear. Use `ESC` to close the inline form or `ENTER` to complete the insertion.
 
+![Example animation](https://raw.github.com/jrowny/brackets-snippets/master/docs/angularExample.gif)
+
 Own snippets
 ============
 
@@ -61,7 +63,9 @@ You can defined own shortcuts for immediate snippet execution on current cursor 
 And then simply use it while working on your code:
 
 - using arguments on the line:
+
 ![Shortcut sample animation](https://raw.github.com/jrowny/brackets-snippets/master/docs/snippetShortcutArgs.gif)
 
 - or using snippet widget:
+
 ![Shortcut sample animation 2](https://raw.github.com/jrowny/brackets-snippets/master/docs/snippetShortcutWidget.gif)
