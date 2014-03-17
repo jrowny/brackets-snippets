@@ -40,3 +40,28 @@ You can edit the data directory inside the extension __but this will be overridd
 
 You can create new JSON files in the ```data``` directory or you can edit the existing ```javascript.json``` file.
 Your JSON files can reference template files if they have a `.snippet` extension and are in the `data\snippets` directory. See html5.snippet for an example.
+
+Snippets with keyboard shortcuts
+================================
+
+You can defined own shortcuts for immediate snippet execution on current cursor position like this:
+
+```
+{
+    "name": "Sample inline script for console logging",
+    "trigger": "log",
+    "usage": "log x",
+    "description": "Log a message into console",
+    "template": "console.log($${message});!!{cursor}",
+    "inline": true,
+    "shortcut": "Alt-L"
+}
+```
+
+And then simply use it while working on your code:
+
+- using arguments on the line:
+![Shortcut sample animation](https://raw.github.com/jrowny/brackets-snippets/master/docs/snippetShortcutArgs.gif)
+
+- or using snippet widget:
+![Shortcut sample animation 2](https://raw.github.com/jrowny/brackets-snippets/master/docs/snippetShortcutWidget.gif)
