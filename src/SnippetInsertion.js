@@ -304,11 +304,8 @@ define(function (require, exports) {
     }
 
     function init(_snippets) {
-        console.log(_snippets);
-
         // fill module variable
         snippets = _snippets;
-
         //add the keybinding
         var SNIPPET_EXECUTE_CMD = "snippets.execute";
         CommandManager.register("Run Snippet", SNIPPET_EXECUTE_CMD, triggerSnippetOnLine);
