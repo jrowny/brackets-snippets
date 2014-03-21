@@ -50,7 +50,6 @@
 
 #snippets .toolbar .snippets-close {
     font-weight: bold;
-    font-height: 20px;
     color: #999;
     margin-right: 5px;
 }
@@ -74,6 +73,10 @@
 }
 
 #snippets-enable-icon {
-    background-image: url(images/icon.png);
+    background: url(images/icon-brackets-snippets.svg);
+}
+
+#snippets-enable-icon.opened {
+    background: url(images/icon-brackets-snippets.svg) 0 -24px;
 }
 

@@ -61,9 +61,11 @@ define(function (require, exports, module) {
     
     function _handleHideSnippets() {
         if (panel.isVisible()) {
+            $("#snippets-enable-icon").removeClass("opened");
             panel.hide();
             CommandManager.get(VIEW_HIDE_SNIPPETS).setChecked(false);
         } else {
+            $("#snippets-enable-icon").addClass("opened");
             panel.show();
             CommandManager.get(VIEW_HIDE_SNIPPETS).setChecked(true);
         }
