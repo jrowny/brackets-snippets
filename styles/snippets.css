@@ -37,10 +37,10 @@
 }
 
 #snippets table .snippets-header td {
-    font-weight: bold;
-    background-color: #404040;
+    border-right: 1px solid rgba(0,0,0,0.03);
+    font-weight: 500;
     padding: 0;
-    color: #fff;
+    color: #454545;
     padding: 4px 10px;
 }
 
