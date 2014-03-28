@@ -37,22 +37,15 @@
 }
 
 #snippets table .snippets-header td {
-    font-weight: bold;
-    background-color: #404040;
+    border-right: 1px solid rgba(0,0,0,0.03);
+    font-weight: 500;
     padding: 0;
-    color: #fff;
+    color: #454545;
     padding: 4px 10px;
 }
 
 #snippets .toolbar {
     display: block;
-}
-
-#snippets .toolbar .snippets-close {
-    font-weight: bold;
-    font-height: 20px;
-    color: #999;
-    margin-right: 5px;
 }
 
 #snippets .toolbar .snippets-settings {
@@ -74,6 +67,10 @@
 }
 
 #snippets-enable-icon {
-    background-image: url(images/icon.png);
+    background: url(images/icon-brackets-snippets.svg);
+}
+
+#snippets-enable-icon.opened {
+    background: url(images/icon-brackets-snippets.svg) 0 -24px;
 }
 

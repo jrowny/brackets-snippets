@@ -37,12 +37,14 @@ define(function (require, exports) {
 
     function toggleSnippetPanel() {
         var isVisible = !panel.isVisible();
-
+        
         if (isVisible) {
             panel.show();
         } else {
             panel.hide();
         }
+        
+        $("#snippets-enable-icon").toggleClass("opened", isVisible);
 
         CommandManager.get(VIEW_HIDE_SNIPPETS).setChecked(isVisible);
         EditorManager.resizeEditor();
