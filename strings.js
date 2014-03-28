@@ -1,5 +1,3 @@
-/*global define */
-
 /**
  * This file provides the interface to user visible strings in Brackets. Code that needs
  * to display strings should should load this module by calling var Strings = require("strings").

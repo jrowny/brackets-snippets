@@ -1,13 +1,15 @@
-/*global brackets, define */
-
 define(function (require, exports, module) {
     "use strict";
 
-    var PREFERENCES_KEY     = "brackets-snippets",
-        _                   = brackets.getModule("thirdparty/lodash"),
-        PreferencesManager  = brackets.getModule("preferences/PreferencesManager"),
-        prefs               = PreferencesManager.getExtensionPrefs(PREFERENCES_KEY);
+    // Brackets modules
+    var _                   = brackets.getModule("thirdparty/lodash"),
+        PreferencesManager  = brackets.getModule("preferences/PreferencesManager");
 
+    // Module constants
+    var PREFERENCES_KEY = "brackets-snippets";
+
+    // Module variables
+    var prefs = PreferencesManager.getExtensionPrefs(PREFERENCES_KEY);
     var defaultPreferences = {
         "snippetsDirectory": {                   "type": "string",            "value": "data"               },
         "triggerSnippetShortcut": {              "type": "string",            "value": "Ctrl-Alt-Space"     },
