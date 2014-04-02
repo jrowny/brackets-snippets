@@ -120,9 +120,8 @@ dateFormat.i18n = {
 };
 
 // For convenience...
-if (Date.prototype.format) {
-    throw new Error("Date.prototype.format is already defined!");
+if (!Date.prototype.format) {
+    Date.prototype.format = function (mask, utc) {
+        return dateFormat(this, mask, utc);
+    };
 }
-Date.prototype.format = function (mask, utc) {
-	return dateFormat(this, mask, utc);
-};
