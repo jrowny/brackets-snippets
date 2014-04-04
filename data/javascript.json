@@ -42,5 +42,11 @@
         "template": "console.log($${message});!!{cursor}",
         "inline": true,
         "shortcut": "Alt-L"
+    },
+    {
+        "name": "Insert % char",
+        "description": "Insert % char on Ctrl-Alt-5",
+        "template": "%",
+        "shortcut": "Ctrl-Alt-5"
     }
 ]

@@ -173,6 +173,9 @@ define(function (require, exports) {
 
     // expects snippet, snippetTrigger, snippetArgs in context
     function _executeSnippet(context) {
+        if (!context.snippet.template) {
+            return console.error("[brackets-snippets] Snippet '" + context.snippet.name + "' has no template defined!");
+        }
         // load snippet from file if required
         return _loadSnippetTemplate(context.snippet.template).done(function (template) {
             context.template = template;
