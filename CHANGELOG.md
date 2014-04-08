@@ -1,7 +1,8 @@
 # Changelog
 
 ## 1.2.0
-* Added support for snippet keyboard shortcuts
+* Added support for snippet keyboard shortcuts.
+* BUGFIX: Close button on panel now words correctly.
 
 ## 1.1.0
 * Added new settings panel - [#34](https://github.com/jrowny/brackets-snippets/pull/34)

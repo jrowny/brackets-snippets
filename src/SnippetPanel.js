@@ -60,7 +60,7 @@ define(function (require, exports) {
             .on("click", ".snippets-settings", function () {
                 SettingsDialog.show();
             })
-            .on("click", ".snippets-close", function () {
+            .on("click", ".close", function () {
                 CommandManager.execute(VIEW_HIDE_SNIPPETS);
             });
 

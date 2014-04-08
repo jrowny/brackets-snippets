@@ -52,11 +52,6 @@
     margin-right: 50px;
 }
 
-#snippets .toolbar .snippets-close:hover {
-    text-decoration: none;
-    color: #000;
-}
-
 #snippets .toolbar button.copy-table {
     border: 1px solid #ccc;
     border-radius: 3px;
