@@ -8,11 +8,19 @@ module.exports = function (grunt) {
             options: {
                 jshintrc: true
             }
+        },
+        jscs: {
+            src: ["*.js", "src/**/*.js", "nls/**/*.js"],
+            options: {
+                config: ".jscs.json"
+            }
         }
     });
 
     grunt.loadNpmTasks("grunt-contrib-jshint");
-    grunt.registerTask("default", ["jshint"]);
-    grunt.registerTask("test", ["jshint"]);
+    grunt.loadNpmTasks("grunt-jscs-checker");
+
+    grunt.registerTask("default", ["jshint", "jscs"]);
+    grunt.registerTask("test", ["jshint", "jscs"]);
 
 };

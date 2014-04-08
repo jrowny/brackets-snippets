@@ -1,0 +1,44 @@
+{
+    "requireCurlyBraces":                           ["if", "else", "for", "while", "do", "try", "catch"],
+    "requireSpaceAfterKeywords":                    ["if", "else", "for", "while", "do", "try", "catch", "switch", "return"],
+    "requireParenthesesAroundIIFE":                 true,
+
+    "requireSpacesInFunctionExpression":            {"beforeOpeningCurlyBrace": true},
+    "requireSpacesInAnonymousFunctionExpression":   {"beforeOpeningRoundBrace": true, "beforeOpeningCurlyBrace": true},
+    "requireSpacesInNamedFunctionExpression":       {"beforeOpeningCurlyBrace": true},
+    "disallowSpacesInNamedFunctionExpression":      {"beforeOpeningRoundBrace": true},
+
+    "requireSpacesInFunctionExpression":            {"beforeOpeningCurlyBrace": true},
+    "disallowSpacesInFunctionDeclaration":          {"beforeOpeningRoundBrace": true},
+
+    "disallowEmptyBlocks":                          true,
+    "disallowSpaceAfterObjectKeys":                 true,
+    "requireCommaBeforeLineBreak":                  true,
+
+    "requireOperatorBeforeLineBreak":               ["?", "+", "-", "/", "*", "=", "==", "===", "!=", "!==", ">", ">=", "<", "<="],
+    "disallowLeftStickedOperators":                 ["?", "+",      "/", "*", "=", "==", "===", "!=", "!==", ">", ">=", "<", "<="],
+    "disallowRightStickedOperators":                ["?", "+",      "/", "*", "=", "==", "===", "!=", "!==", ">", ">=", "<", "<="],
+    "requireRightStickedOperators":                 ["!"],
+    "requireLeftStickedOperators":                  [","],
+    "disallowSpaceAfterPrefixUnaryOperators":       ["++", "--", "+", "-", "~", "!"],
+    "disallowSpaceBeforePostfixUnaryOperators":     ["++", "--"],
+    "requireSpaceBeforeBinaryOperators":            ["+", "-", "/", "*", "=", "==", "===", "!=", "!=="],
+    "requireSpaceAfterBinaryOperators":             ["+", "-", "/", "*", "=", "==", "===", "!=", "!=="],
+
+    "disallowImplicitTypeConversion":               ["numeric", "binary", "string"],
+    "requireCamelCaseOrUpperCaseIdentifiers":       true,
+    "disallowKeywords":                             ["with", "debugger", "void", "class", "extends", "super", "enum", "import", "export",
+                                                     "implements", "private", "static", "interface", "protected", "yield", "let", "public",
+                                                     "package"],
+    "disallowKeywordsOnNewLine":                    ["else"],
+    "disallowMultipleLineStrings":                  true,
+    "disallowMultipleLineBreaks":                   true,
+    "validateLineBreaks":                           "LF",
+    "validateQuoteMarks":                           "\"",
+    "disallowMixedSpacesAndTabs":                   true,
+    "disallowTrailingWhitespace":                   true,
+    "requireLineFeedAtFileEnd":                     true,
+    "requireCapitalizedConstructors":               true,
+    "safeContextKeyword":                           ["self"],
+    "disallowYodaConditions":                       true
+}

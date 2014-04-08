@@ -37,6 +37,7 @@
     },
     "devDependencies": {
         "grunt": "latest",
-        "grunt-contrib-jshint": "latest"
+        "grunt-contrib-jshint": "latest",
+        "grunt-jscs-checker": "latest"
     }
 }
