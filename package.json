@@ -1,24 +1,39 @@
 {
     "name": "zaggino.brackets-snippets",
+
     "title": "Brackets Snippets (fork by zaggino)",
     "description": "Provides ability to use code snippets in Brackets.",
-    "homepage": "https://github.com/zaggino/brackets-snippets",
+    "keywords": ["snippets", "templates"],
+    "version": "1.2.0",
+
     "license": "MIT",
+    "homepage": "https://github.com/zaggino/brackets-snippets",
+    "author": {
+        "name" : "Martin Zagora",
+        "email" : "zaggino@gmail.com",
+        "url" : "https://twitter.com/zaggino"
+    },
     "contributors": [
         {
             "name" : "Jonathan Rowny",
             "email" : "",
             "url" : "http://www.jonathanrowny.com/"
-        },
-        {
-            "name" : "Martin Zagora",
-            "email" : "zaggino@gmail.com",
-            "url" : "https://twitter.com/zaggino"
         }
     ],
-    "version": "unpublished",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/zaggino/brackets-snippets.git"
+    },
+    "bugs": {
+        "url": "https://github.com/zaggino/brackets-snippets/issues",
+        "email": "zaggino@gmail.com"
+    },
+
     "engines": {
-        "brackets": ">=0.37"
+        "brackets": ">=0.38.0"
+    },
+    "scripts": {
+        "test": "grunt test"
     },
     "devDependencies": {
         "grunt": "latest",

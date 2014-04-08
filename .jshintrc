@@ -2,13 +2,19 @@
     "bitwise": true,
     "camelcase": true,
     "curly": true,
+    "eqeqeq": false,
+    "es3": false,
+    "forin": true,
+    "freeze": true,
     "immed": true,
     "indent": 4,
     "latedef": true,
     "newcap": true,
     "noarg": true,
     "noempty": true,
+    "nonbsp": true,
     "nonew": true,
+    "plusplus": false,
     "quotmark": "double",
     "undef": true,
     "unused": true,
@@ -16,23 +22,23 @@
     "trailing": true,
     "maxparams": 5,
     "maxdepth": 5,
-    "maxstatements": 50,
-    "maxlen": 200,
+    "maxstatements": 100,
+    "maxlen": 150,
 
     "eqnull": true,
-    "esnext": false,
-    "loopfunc": false,
 
-    "browser": true,
-    "devel": true,
-    "jquery": true,
+    "browser": false,
+    "devel": false,
     "node": true,
-    "nonstandard": true,
+
     "white": true,
 
     "globals": {
-        "define": true,
+        "$": true,
+        "document": true,
         "brackets": true,
-        "Mustache": true
+        "define": true,
+        "Mustache": true,
+        "window": true
     }
 }
