@@ -3,6 +3,7 @@ define(function (require, exports, module) {
     // Brackets modules
     var _                 = brackets.getModule("thirdparty/lodash"),
         AppInit           = brackets.getModule("utils/AppInit"),
+        CodeHintManager   = brackets.getModule("editor/CodeHintManager"),
         CommandManager    = brackets.getModule("command/CommandManager"),
         ExtensionUtils    = brackets.getModule("utils/ExtensionUtils"),
         FileSystem        = brackets.getModule("filesystem/FileSystem"),
@@ -10,7 +11,8 @@ define(function (require, exports, module) {
         KeyBindingManager = brackets.getModule("command/KeyBindingManager");
 
     // Dependencies
-    var Preferences       = require("src/Preferences"),
+    var HintProvider      = require("src/HintProvider"),
+        Preferences       = require("src/Preferences"),
         SnippetPanel      = require("src/SnippetPanel"),
         SnippetInsertion  = require("src/SnippetInsertion");
 
@@ -111,6 +113,7 @@ define(function (require, exports, module) {
         loadAllSnippetsFromDataDirectory().done(function (snippets) {
             SnippetPanel.renderTable(snippets);
             SnippetInsertion.init(snippets);
+            CodeHintManager.registerHintProvider(new HintProvider(snippets), ["all"], 999);
         }).fail(function (err) {
             console.error(err);
         });

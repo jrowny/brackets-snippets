@@ -242,16 +242,34 @@ define(function (require, exports) {
     }
 
     // triggers passed snippet on current cursor position
-    function triggerSnippet(snippet) {
+    function triggerSnippet(snippet, snippetTrigger) {
         var context = _createContext();
         context.snippet = snippet;
-        context.snippetTrigger = {
+        context.snippetTrigger = snippetTrigger || {
             str: "",
             ch: context.pos.ch
         };
-        // we need to get arguments before cursor position and fill snippetArgs
+
+        // we need to get arguments from the line to fill snippetArgs
         var props = _parseArgs(context.line);
-        context.snippetArgs = _.filter(props, function (prop) { return prop.ch <= context.pos.ch; });
+
+        // if we pass custom trigger, exclude it from the props
+        if (snippetTrigger && snippetTrigger.str) {
+            var newProps = [];
+            for (var i = props.length - 1; i >= 0; i--) {
+                if (props[i].str === snippetTrigger.str) {
+                    break;
+                }
+                newProps.unshift(props[i]);
+            }
+            props = newProps;
+        }
+
+        // filter only those props that are before the cursor position
+        context.snippetArgs = _.filter(props, function (prop) {
+            return prop.ch <= context.pos.ch;
+        });
+
         return _executeSnippet(context);
     }
 
