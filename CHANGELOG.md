@@ -3,6 +3,7 @@
 ## 1.2.0
 * Added support for snippet keyboard shortcuts.
 * Makes it possible to toggle snippets list by typing @ character - [jrowny#40](https://github.com/jrowny/brackets-snippets/issues/40)
+* Snippet files are automatically reloaded when they're changed - [jrowny#46](https://github.com/jrowny/brackets-snippets/issues/46)
 * BUGFIX: Close button on panel now words correctly.
 
 ## 1.1.0

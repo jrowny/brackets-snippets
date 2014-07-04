@@ -1,15 +1,14 @@
-define(function(require, exports, module){
+define(function(require, exports){
 
     // Brackets modules
-    var _                 = brackets.getModule("thirdparty/lodash");
+    var _                 = brackets.getModule("thirdparty/lodash"),
+        CodeHintManager   = brackets.getModule("editor/CodeHintManager");
 
     // Dependencies
     var SnippetInsertion  = require("src/SnippetInsertion");
 
-    function HintProvider(snippets) {
-        this.snippets = _.filter(snippets, function (snippet) {
-            return snippet.trigger;
-        });
+    function HintProvider() {
+        this.snippets = [];
     }
 
     HintProvider.prototype.hasHints = function (editor, implicitChar) {
@@ -79,6 +78,21 @@ define(function(require, exports, module){
         return false;
     };
 
-    module.exports = HintProvider;
+    // TODO: simplify this to singleton
+    var hintProviderInstance = null;
+
+    function init() {
+        hintProviderInstance = new HintProvider();
+        CodeHintManager.registerHintProvider(hintProviderInstance, ["all"], 999);
+    }
+
+    function updateSnippets(snippets) {
+        hintProviderInstance.snippets = _.filter(snippets, function (snippet) {
+            return snippet.trigger;
+        });
+    }
+
+    exports.init = init;
+    exports.updateSnippets = updateSnippets;
 
 });

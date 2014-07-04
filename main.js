@@ -3,7 +3,6 @@ define(function (require, exports, module) {
     // Brackets modules
     var _                 = brackets.getModule("thirdparty/lodash"),
         AppInit           = brackets.getModule("utils/AppInit"),
-        CodeHintManager   = brackets.getModule("editor/CodeHintManager"),
         CommandManager    = brackets.getModule("command/CommandManager"),
         ExtensionUtils    = brackets.getModule("utils/ExtensionUtils"),
         FileSystem        = brackets.getModule("filesystem/FileSystem"),
@@ -16,6 +15,8 @@ define(function (require, exports, module) {
         SnippetPanel      = require("src/SnippetPanel"),
         SnippetInsertion  = require("src/SnippetInsertion");
 
+    var _commandCounter = 0;
+
     function finalizeSnippetsLoading(arrays) {
         // merge all results into snippets array
         var snippets = arrays.reduce(function (snippets, arr) {
@@ -26,16 +27,28 @@ define(function (require, exports, module) {
         _.filter(snippets, function (snippet) {
             return typeof snippet.shortcut === "string";
         }).forEach(function (snippet) {
-            var commandName = "Run snippet " + snippet.trigger,
-                commandString = "snippets.execute." + snippet.trigger;
+
+            _commandCounter++;
+
+            var commandName = "Run snippet '" + snippet.name + "'",
+                commandString = "snippets.execute." + _commandCounter;
+
             CommandManager.register(commandName, commandString, function () {
                 SnippetInsertion.triggerSnippet(snippet);
             });
+
+            // remove any old bindings
+            KeyBindingManager.removeBinding(snippet.shortcut);
+
+            // add new binding
             KeyBindingManager.addBinding(commandString, snippet.shortcut);
+
         });
 
         return snippets;
     }
+
+
 
     function loadSnippetsFromFile(fileEntry) {
         var deferred = new $.Deferred();
@@ -62,12 +75,17 @@ define(function (require, exports, module) {
         return deferred.promise();
     }
 
+    var _getSnippetsDirectory = null;
     function getSnippetsDirectory() {
+        if (_getSnippetsDirectory) { return _getSnippetsDirectory; }
+
         var snippetsDirectory = Preferences.get("snippetsDirectory").replace(/\\/g, "/");
         if (!FileSystem.isAbsolutePath(snippetsDirectory)) {
             snippetsDirectory = FileUtils.getNativeModuleDirectoryPath(module) + "/" + snippetsDirectory;
         }
-        return snippetsDirectory;
+
+        _getSnippetsDirectory = snippetsDirectory;
+        return _getSnippetsDirectory;
     }
 
     function loadAllSnippetsFromDataDirectory() {
@@ -107,16 +125,31 @@ define(function (require, exports, module) {
         return deferred.promise();
     }
 
-    AppInit.appReady(function () {
-        ExtensionUtils.loadStyleSheet(module, "styles/snippets.css");
-        SnippetPanel.init();
+    function reloadSnippets() {
         loadAllSnippetsFromDataDirectory().done(function (snippets) {
             SnippetPanel.renderTable(snippets);
-            SnippetInsertion.init(snippets);
-            CodeHintManager.registerHintProvider(new HintProvider(snippets), ["all"], 999);
+            SnippetInsertion.updateSnippets(snippets);
+            HintProvider.updateSnippets(snippets);
         }).fail(function (err) {
             console.error(err);
         });
+    }
+
+    // Listeners for file changes.
+    FileSystem.on("change", function(event, file) {
+        if (file.fullPath.indexOf(getSnippetsDirectory()) === 0) {
+            reloadSnippets();
+        }
+    });
+
+    AppInit.appReady(function () {
+        ExtensionUtils.loadStyleSheet(module, "styles/snippets.css");
+
+        SnippetPanel.init();
+        SnippetInsertion.init();
+        HintProvider.init();
+
+        reloadSnippets();
     });
     
     // Public API

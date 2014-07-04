@@ -324,17 +324,21 @@ define(function (require, exports) {
         }
     }
 
-    function init(_snippets) {
-        // fill module variable
-        snippets = _snippets;
+    function init() {
         //add the keybinding
         var SNIPPET_EXECUTE_CMD = "snippets.execute";
         CommandManager.register("Run Snippet", SNIPPET_EXECUTE_CMD, triggerSnippetOnLine);
         KeyBindingManager.addBinding(SNIPPET_EXECUTE_CMD, Preferences.get("triggerSnippetShortcut"));
     }
 
+    function updateSnippets(_snippets) {
+        // fill module variable
+        snippets = _snippets;
+    }
+
     // Public API
-    exports.triggerSnippet = triggerSnippet;
-    exports.triggerSnippetOnLine = triggerSnippetOnLine;
-    exports.init = init;
+    exports.triggerSnippet        = triggerSnippet;
+    exports.triggerSnippetOnLine  = triggerSnippetOnLine;
+    exports.init                  = init;
+    exports.updateSnippets        = updateSnippets;
 });

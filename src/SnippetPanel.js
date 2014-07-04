@@ -25,14 +25,8 @@ define(function (require, exports) {
 
     function renderTable(snippets) {
         // render snippets table
-        var $snippetsTable = Mustache.render(snippetsHTML, {"snippets" : snippets});
-        $panel.find(".resizable-content").append($snippetsTable);
-        $panel.find(".snippets-trigger").on("click", function () {
-            CommandManager.execute(SNIPPET_EXECUTE, [$(this).attr("data-trigger")]);
-        });
-        $panel.find(".snippets-source").on("click", function () {
-            CommandManager.execute(Commands.FILE_OPEN, { fullPath: Main.getSnippetsDirectory() + "/" + $(this).attr("data-source") });
-        });
+        var snippetsTableHtml = Mustache.render(snippetsHTML, {"snippets" : snippets});
+        $panel.find(".resizable-content").empty().append(snippetsTableHtml);
     }
 
     function toggleSnippetPanel() {
@@ -59,6 +53,12 @@ define(function (require, exports) {
         $panel
             .on("click", ".snippets-settings", function () {
                 SettingsDialog.show();
+            })
+            .on("click", ".snippets-trigger", function () {
+                CommandManager.execute(SNIPPET_EXECUTE, [$(this).attr("data-trigger")]);
+            })
+            .on("click", ".snippets-source", function () {
+                CommandManager.execute(Commands.FILE_OPEN, { fullPath: Main.getSnippetsDirectory() + "/" + $(this).attr("data-source") });
             })
             .on("click", ".close", function () {
                 CommandManager.execute(VIEW_HIDE_SNIPPETS);
