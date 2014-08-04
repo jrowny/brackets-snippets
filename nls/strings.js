@@ -17,6 +17,8 @@ define(function (require, exports, module) {
     // /TODO: dynamically populate the local prefix list below?
     module.exports = {
         root: true,
-        "de": true
+        "de": true,
+        "es": true,
+        "gl": true
     };
 });
