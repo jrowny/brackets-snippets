@@ -10,8 +10,7 @@ define(function (require, exports, module) {
         KeyBindingManager = brackets.getModule("command/KeyBindingManager");
 
     // Dependencies
-    var HintProvider      = require("src/HintProvider"),
-        Preferences       = require("src/Preferences"),
+    var Preferences       = require("src/Preferences"),
         SnippetPanel      = require("src/SnippetPanel"),
         SnippetInsertion  = require("src/SnippetInsertion");
 
@@ -48,8 +47,6 @@ define(function (require, exports, module) {
         return snippets;
     }
 
-
-
     function loadSnippetsFromFile(fileEntry) {
         var deferred = new $.Deferred();
         fileEntry.read(function (err, text) {
@@ -59,7 +56,7 @@ define(function (require, exports, module) {
             }
 
             var newSnippets;
-            //TODO: a better check for valid snippets
+            // TODO: a better check for valid snippets
             try {
                 newSnippets = JSON.parse(text);
             } catch (err) {
@@ -92,7 +89,7 @@ define(function (require, exports, module) {
         var deferred = new $.Deferred(),
             snippetsDirectory = getSnippetsDirectory();
 
-        //loop through the directory to load snippets
+        // loop through the directory to load snippets
         FileSystem.resolve(snippetsDirectory, function (err, rootEntry) {
             if (err) {
                 console.error("[Snippets] Error -- could not open snippets directory: " + snippetsDirectory);
@@ -107,11 +104,11 @@ define(function (require, exports, module) {
 
                 var loading = _.compact(entries.map(function (entry) {
                     if (entry.name.charAt(0) === ".") {
-                        //ignore dotfiles
+                        // ignore dotfiles
                         return;
                     }
                     if (entry.isDirectory) {
-                        //ignore directories
+                        // ignore directories
                         return;
                     }
                     return loadSnippetsFromFile(entry);
@@ -129,29 +126,26 @@ define(function (require, exports, module) {
         loadAllSnippetsFromDataDirectory().done(function (snippets) {
             SnippetPanel.renderTable(snippets);
             SnippetInsertion.updateSnippets(snippets);
-            HintProvider.updateSnippets(snippets);
         }).fail(function (err) {
             console.error(err);
         });
     }
 
     // Listeners for file changes.
-    FileSystem.on("change", function(event, file) {
+    FileSystem.on("change", function (event, file) {
         if (file.fullPath.indexOf(getSnippetsDirectory()) === 0) {
             reloadSnippets();
         }
     });
 
+    // Extension startup
     AppInit.appReady(function () {
-        ExtensionUtils.loadStyleSheet(module, "styles/snippets.css");
-
+        ExtensionUtils.loadStyleSheet(module, "styles/snippets.less");
         SnippetPanel.init();
         SnippetInsertion.init();
-        HintProvider.init();
-
         reloadSnippets();
     });
-    
+
     // Public API
     exports.getSnippetsDirectory = getSnippetsDirectory;
 });

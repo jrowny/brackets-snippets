@@ -1,0 +1,11 @@
+{
+    "paths": {
+        "eventemitter2": "./thirdparty/eventemitter2",
+        "moment": "./thirdparty/moment.min"
+    },
+    "config": {
+        "moment": {
+            "noGlobal": true
+        }
+    }
+}

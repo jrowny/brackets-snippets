@@ -30,7 +30,7 @@
     },
 
     "engines": {
-        "brackets": ">=0.38.0"
+        "brackets": ">=0.43.0"
     },
     "scripts": {
         "test": "grunt test"
@@ -38,6 +38,8 @@
     "devDependencies": {
         "grunt": "latest",
         "grunt-contrib-jshint": "latest",
-        "grunt-jscs-checker": "latest"
+        "grunt-jscs": "latest",
+        "grunt-contrib-compress": "latest",
+        "grunt-lineending": "latest"
     }
 }

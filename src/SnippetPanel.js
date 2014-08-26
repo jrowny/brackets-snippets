@@ -25,19 +25,19 @@ define(function (require, exports) {
 
     function renderTable(snippets) {
         // render snippets table
-        var snippetsTableHtml = Mustache.render(snippetsHTML, {"snippets" : snippets});
+        var snippetsTableHtml = Mustache.render(snippetsHTML, { snippets: snippets });
         $panel.find(".resizable-content").empty().append(snippetsTableHtml);
     }
 
     function toggleSnippetPanel() {
         var isVisible = !panel.isVisible();
-        
+
         if (isVisible) {
             panel.show();
         } else {
             panel.hide();
         }
-        
+
         $("#snippets-enable-icon").toggleClass("opened", isVisible);
 
         CommandManager.get(VIEW_HIDE_SNIPPETS).setChecked(isVisible);

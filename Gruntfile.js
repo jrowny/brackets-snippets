@@ -14,12 +14,52 @@ module.exports = function (grunt) {
             options: {
                 config: ".jscs.json"
             }
+        },
+        compress: {
+            main: {
+                options: {
+                    archive: "brackets-snippets.zip"
+                },
+                files: [
+                    { src: ["data/**"], dest: "/" },
+                    { src: ["nls/**"], dest: "/" },
+                    { src: ["src/**"], dest: "/" },
+                    { src: ["styles/**"], dest: "/" },
+                    { src: ["templates/**"], dest: "/" },
+                    { src: ["thirdparty/**"], dest: "/" },
+                    { src: ["LICENSE", "*.js", "*.json", "*.md"], dest: "/", filter: "isFile" }
+                ]
+            }
+        },
+        lineending: {
+            dist: {
+                options: {
+                    eol: "lf",
+                    overwrite: true
+                },
+                files: {
+                    "": [
+                        "main.js",
+                        "strings.js",
+                        "Gruntfile.js",
+                        "data/**/*.*",
+                        "nls/**/*.js",
+                        "src/**/*.js",
+                        "styles/**/*.less",
+                        "templates/**/*.html",
+                        "thirdparty/**/*.js"
+                    ]
+                }
+            }
         }
     });
 
     grunt.loadNpmTasks("grunt-contrib-jshint");
-    grunt.loadNpmTasks("grunt-jscs-checker");
+    grunt.loadNpmTasks("grunt-jscs");
+    grunt.loadNpmTasks("grunt-contrib-compress");
+    grunt.loadNpmTasks("grunt-lineending");
 
+    grunt.registerTask("package", ["lineending", "compress"]);
     grunt.registerTask("default", ["jshint", "jscs"]);
     grunt.registerTask("test", ["jshint", "jscs"]);
 

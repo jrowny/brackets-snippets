@@ -157,7 +157,7 @@ define(function (require, exports) {
         }
 
         // do insertion
-        context.document.replaceRange(template, {line: line, ch: chFrom}, {line: line, ch: chTo});
+        context.document.replaceRange(template, { line: line, ch: chFrom }, { line: line, ch: chTo });
 
         // set cursor
         context.editor._codeMirror.setCursor(line + cursorOffsetLine, chFrom + cursorOffsetChar);
@@ -307,8 +307,8 @@ define(function (require, exports) {
             }
         }
 
-        //no inline snippet found so look for any snippet that matches props[0]
-        //it can also have % as a prefix so remove
+        // no inline snippet found so look for any snippet that matches props[0]
+        // it can also have % as a prefix so remove
         var lookFor = props[0].str;
         if (lookFor[0] === "%") {
             lookFor = lookFor.substring(1);
@@ -325,7 +325,7 @@ define(function (require, exports) {
     }
 
     function init() {
-        //add the keybinding
+        // add the keybinding
         var SNIPPET_EXECUTE_CMD = "snippets.execute";
         CommandManager.register("Run Snippet", SNIPPET_EXECUTE_CMD, triggerSnippetOnLine);
         KeyBindingManager.addBinding(SNIPPET_EXECUTE_CMD, Preferences.get("triggerSnippetShortcut"));
