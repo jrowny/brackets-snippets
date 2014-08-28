@@ -1,6 +1,7 @@
 # Changelog
 
-## 1.2.0
+## 2.0.0
+* Decided to release my own fork, as original extension is no longer maintained.
 * Snippet files are automatically reloaded when they're changed - [jrowny#46](https://github.com/jrowny/brackets-snippets/issues/46)
 * BUGFIX: Close button on panel now words correctly.
 

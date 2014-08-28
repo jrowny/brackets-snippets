@@ -6,8 +6,8 @@ define(function (require, exports) {
         Dialogs                 = brackets.getModule("widgets/Dialogs");
 
     // Extension modules
-    var Preferences             = require("./Preferences"),
-        Strings                 = require("../strings"),
+    var Preferences             = require("src/Preferences"),
+        Strings                 = require("strings"),
         settingsDialogTemplate  = require("text!templates/settings-dialog.html"),
         questionDialogTemplate  = require("text!templates/question-dialog.html");
 

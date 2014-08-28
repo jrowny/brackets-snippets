@@ -4,7 +4,7 @@
     "title": "Brackets Snippets (fork by zaggino)",
     "description": "Provides ability to use code snippets in Brackets.",
     "keywords": ["snippets", "templates"],
-    "version": "1.2.0",
+    "version": "2.0.0",
 
     "license": "MIT",
     "homepage": "https://github.com/zaggino/brackets-snippets",

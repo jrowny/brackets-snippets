@@ -1,6 +1,4 @@
 /*jshint maxlen:false */
-/*global define */
-
 define({
     BUTTON_CANCEL:                      "Cancel",
     BUTTON_OK:                          "OK",

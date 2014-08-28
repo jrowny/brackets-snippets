@@ -333,17 +333,13 @@ define(function (require) {
         KeyBindingManager.addBinding(SNIPPET_EXECUTE_CMD, Preferences.get("triggerSnippetShortcut"));
     }
 
-    function updateSnippets(_snippets) {
-        // fill module variable
-        snippets = _snippets;
-    }
-
     // Register event handlers
     EventEmitter.on(Events.EXTENSION_INIT, function () {
         init();
     });
-    EventEmitter.on(Events.SNIPPETS_LOADED, function (snippets) {
-        updateSnippets(snippets);
+    EventEmitter.on(Events.SNIPPETS_LOADED, function (_snippets) {
+        // fill module variable
+        snippets = _snippets;
     });
     EventEmitter.on(Events.TRIGGER_SNIPPET, function (snippet) {
         triggerSnippet(snippet);
