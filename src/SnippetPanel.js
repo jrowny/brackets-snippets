@@ -1,4 +1,4 @@
-define(function (require, exports) {
+define(function (require) {
     "use strict";
 
     // Brackets modules
@@ -8,8 +8,10 @@ define(function (require, exports) {
         Menus               = brackets.getModule("command/Menus"),
         PanelManager        = brackets.getModule("view/PanelManager");
 
-    // Dependencies
-    var Main                = require("main"),
+    // Extension modules
+    var EventEmitter        = require("src/EventEmitter"),
+        Events              = require("src/Events"),
+        Main                = require("main"),
         Preferences         = require("src/Preferences"),
         SettingsDialog      = require("src/SettingsDialog"),
         panelHtml           = require("text!templates/bottom-panel.html"),
@@ -81,7 +83,12 @@ define(function (require, exports) {
     // Register command
     CommandManager.register("Show Snippets", VIEW_HIDE_SNIPPETS, toggleSnippetPanel);
 
-    // Public API
-    exports.renderTable = renderTable;
-    exports.init = init;
+    // Register event listeners
+    EventEmitter.on(Events.EXTENSION_INIT, function () {
+        init();
+    });
+    EventEmitter.on(Events.SNIPPETS_LOADED, function (snippets) {
+        renderTable(snippets);
+    });
+
 });

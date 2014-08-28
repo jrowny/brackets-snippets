@@ -5,7 +5,7 @@ define(function (require, exports) {
     var CommandManager          = brackets.getModule("command/CommandManager"),
         Dialogs                 = brackets.getModule("widgets/Dialogs");
 
-    // Dependencies
+    // Extension modules
     var Preferences             = require("./Preferences"),
         Strings                 = require("../strings"),
         settingsDialogTemplate  = require("text!templates/settings-dialog.html"),

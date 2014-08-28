@@ -4,7 +4,7 @@ define(function (require, exports) {
     // Brackets modules
     var DocumentManager = brackets.getModule("document/DocumentManager");
 
-    // Dependencies
+    // Extension modules
     require("thirdparty/date-format");
 
     // Module variables

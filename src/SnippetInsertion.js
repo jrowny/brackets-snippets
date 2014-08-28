@@ -1,4 +1,4 @@
-define(function (require, exports) {
+define(function (require) {
     "use strict";
 
     // Brackets modules
@@ -10,8 +10,10 @@ define(function (require, exports) {
         FileUtils         = brackets.getModule("file/FileUtils"),
         KeyBindingManager = brackets.getModule("command/KeyBindingManager");
 
-    // Dependencies
-    var Main              = require("main"),
+    // Extension modules
+    var EventEmitter      = require("src/EventEmitter"),
+        Events            = require("src/Events"),
+        Main              = require("main"),
         InlineSnippetForm = require("src/InlineSnippetForm"),
         Preferences       = require("src/Preferences"),
         SnippetPresets    = require("src/SnippetPresets");
@@ -174,7 +176,7 @@ define(function (require, exports) {
     // expects snippet, snippetTrigger, snippetArgs in context
     function _executeSnippet(context) {
         if (!context.snippet.template) {
-            return console.error("[brackets-snippets] Snippet '" + context.snippet.name + "' has no template defined!");
+            return console.error("[brackets-snippets]", "Snippet '" + context.snippet.name + "' has no template defined!");
         }
         // load snippet from file if required
         return _loadSnippetTemplate(context.snippet.template).done(function (template) {
@@ -235,7 +237,7 @@ define(function (require, exports) {
                     });
 
                 }).fail(function (err) {
-                    console.error(err);
+                    console.error("[brackets-snippets]", err);
                 });
             }
         });
@@ -336,9 +338,15 @@ define(function (require, exports) {
         snippets = _snippets;
     }
 
-    // Public API
-    exports.triggerSnippet        = triggerSnippet;
-    exports.triggerSnippetOnLine  = triggerSnippetOnLine;
-    exports.init                  = init;
-    exports.updateSnippets        = updateSnippets;
+    // Register event handlers
+    EventEmitter.on(Events.EXTENSION_INIT, function () {
+        init();
+    });
+    EventEmitter.on(Events.SNIPPETS_LOADED, function (snippets) {
+        updateSnippets(snippets);
+    });
+    EventEmitter.on(Events.TRIGGER_SNIPPET, function (snippet) {
+        triggerSnippet(snippet);
+    });
+
 });

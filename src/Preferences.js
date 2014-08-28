@@ -11,7 +11,7 @@ define(function (require, exports, module) {
         "snippetsDirectory": {                   "type": "string",            "value": "data"               },
         "triggerSnippetShortcut": {              "type": "string",            "value": "Ctrl-Alt-Space"     },
         "showSnippetsPanelShortcut": {           "type": "string",            "value": ""                   },
-        "debugMode": {                           "type": "boolean",           "value": true                 }
+        "debugMode": {                           "type": "boolean",           "value": false                }
     };
 
     var prefs = PreferencesManager.getExtensionPrefs(prefix);

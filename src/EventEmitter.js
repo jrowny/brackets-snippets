@@ -35,7 +35,7 @@ define(function (require, exports, module) {
             }).join(", ");
             if (argsString) { argsString = " - " + argsString; }
             argsString = argsString + " (" + listenersCount + " listeners)";
-            console.log("[brackets-snippets] Event invoked: " + eventName + argsString);
+            console.log("[brackets-snippets]", "Event invoked: " + eventName + argsString);
 
             return this._emit.apply(this, arguments);
         };
