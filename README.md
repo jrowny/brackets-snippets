@@ -9,8 +9,8 @@ To install, go to the Brackets Extension Manager and search for `brackets snippe
 
 Usage
 =====
-**Ctrl-Shift-S** shows you what snippets are available. Click any snippet to begin inserting.<br>
-**Ctrl-Alt-V** to insert the snippet. (Cmd-Alt-V on Mac).
+Icon on the right toolbar shows you what snippets are available. Click any snippet to begin inserting.<br>
+**Ctrl-Alt-Space** to insert the snippet. (Cmd-Alt-Space on Mac).
 
 type a trigger followed by parameters (optional), then hit Ctrl-Alt-V  
 
