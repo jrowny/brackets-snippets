@@ -1,0 +1,9 @@
+[
+    {
+        "name": "bootstrap",
+		"trigger": "bootstrap",
+		"usage": "bootstrap",
+		"description": "Create a bootstrap page",
+		"template": "bootstrap.snippet"
+    }
+]
