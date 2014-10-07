@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.2.0
+* Added support for snippet keyboard shortcuts
+
 ## 1.1.0
 * Added new settings panel - [#34](https://github.com/jrowny/brackets-snippets/pull/34)
 * Added support for inline snippets - [#15](https://github.com/jrowny/brackets-snippets/issues/15)
