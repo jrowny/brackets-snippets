@@ -12,9 +12,9 @@ define(function (require, exports, module) {
     }
 
     function textWidth(text) {
-        var html = $("<span style='postion:absolute;width:auto;left:-9999px;'>" + text + "</span>");
+        var html = $("<span>" + text + "</span>");
         $("body").append(html);
-        var width = html.width();
+        var width = html.width()+18;
         html.remove();
         return width;
     }
