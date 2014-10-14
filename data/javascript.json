@@ -18,7 +18,7 @@
         "trigger": "mf",
         "usage": "mf myFunc",
         "description": "Create a javascript function",
-        "template": "$${name}: function() {\n\t!!{cursor}\n},"
+        "template": "$${name}: function() {\n!!{cursor}\n},"
     },
     {
         "name": "Function with arguments",
