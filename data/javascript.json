@@ -91,6 +91,13 @@
         "template": "for (var $${iterator} = 0; $${iterator} < $${container}; $${iterator}++) {\n!!{cursor}\n}"
     },
     {
+        "name": "For ... in ... Loop",
+        "trigger": "forin",
+        "usage": "for object container",
+        "description": "Create a javascript for ... in ... loop",
+        "template": "for ($${object} in $${container}) {\n!!{cursor}\n}"
+    },
+    {
         "name": "For Each",
         "trigger": "foreach",
         "usage": "foreach itemList item",
