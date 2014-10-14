@@ -18,7 +18,7 @@
         "trigger": "mf",
         "usage": "mf myFunc",
         "description": "Create a javascript function",
-        "template": "$${name}: function() {\n!!{cursor}\n},"
+        "template": "$${name}: function() {\n\t!!{cursor}\n},"
     },
     {
         "name": "Function with arguments",
@@ -86,9 +86,9 @@
     {
         "name": "For Loop",
         "trigger": "for",
-        "usage": "for iterator iteratorValue someArray.length",
+        "usage": "for iterator container",
         "description": "Create a javascript for loop",
-        "template": "for (var $${iterator} = $${iteratorValue}; $${iterator} < $${container}; $${iterator}++) {\n!!{cursor}\n}"
+        "template": "for (var $${iterator} = 0; $${iterator} < $${container}; $${iterator}++) {\n!!{cursor}\n}"
     },
     {
         "name": "For Each",
