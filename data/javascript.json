@@ -7,11 +7,88 @@
         "template": "function $${name}() {\n!!{cursor}\n}"
     },
     {
+        "name": "Anonymous Function",
+        "trigger": "af",
+        "usage": "af myFunc",
+        "description": "Create a javascript anonymous function",
+        "template": "var $${name} = function() {\n!!{cursor}\n};"
+    },
+    {
+        "name": "Method Function",
+        "trigger": "mf",
+        "usage": "mf myFunc",
+        "description": "Create a javascript function",
+        "template": "$${name}: function() {\n\t!!{cursor}\n},"
+    },
+    {
+        "name": "Function with arguments",
+        "trigger": "fa",
+        "usage": "fa myFunc myArgs",
+        "description": "Create a javascript function",
+        "template": "function $${name}($${args}) {\n!!{cursor}\n}"
+    },
+    {
+        "name": "Anonymous Function with arguments",
+        "trigger": "afa",
+        "usage": "af myFunc myArgs",
+        "description": "Create a javascript anonymous function with arguments",
+        "template": "var $${name} = function($${args}) {\n!!{cursor}\n};"
+    },
+    {
+        "name": "Method Function with arguments",
+        "trigger": "mfa",
+        "usage": "mf myFunc myArgs",
+        "description": "Create a javascript function with arguments",
+        "template": "$${name}: function($${args}) {\n\t!!{cursor}\n},"
+    },
+    {
+        "name": "If",
+        "trigger": "if",
+        "usage": "if condition",
+        "description": "Create a javascript if conditional",
+        "template": "if ($${condition}) {\n!!{cursor}\n}"
+    },
+    {
+        "name": "Else If",
+        "trigger": "eif",
+        "usage": "eif condition",
+        "description": "Create a javascript else if conditional",
+        "template": "else if ($${condition}) {\n!!{cursor}\n}"
+    },
+    {
+        "name": "If ... else",
+        "trigger": "ife",
+        "usage": "ife condition",
+        "description": "Create a javascript if ... else conditional",
+        "template": "if ($${condition}) {\n!!{cursor}\n} else {\n\t\n}"
+    },
+    {
+        "name": "Switch",
+        "trigger": "switch",
+        "usage": "switch expression",
+        "description": "Create a javascript switch",
+        "template": "switch ($${expression}) {\n\ndefault:\n!!{cursor}\n}"
+    },
+    {
+        "name": "Switch Case",
+        "trigger": "case",
+        "usage": "case expression",
+        "description": "Create a javascript switch case",
+        "template": "case $${expression}: \n!!{cursor}\nbreak;"
+    },
+    {
+        "name": "While Loop",
+        "trigger": "while",
+        "usage": "while condition",
+        "description": "Create a javascript while loop",
+        "template": "while ($${condition}) {\n!!{cursor}\n}"
+    },
+    {
         "name": "For Loop",
         "trigger": "for",
-        "usage": "for x someArray",
+        "usage": "for iterator iteratorValue someArray.length",
         "description": "Create a javascript for loop",
-        "template": "var $${iterator};\nvar $${limit} = $${container}.length;\nfor ($${iterator} = 0; $${iterator} < $${limit}; $${iterator}++) {\n!!{cursor}\n}"
+        "template": "for (var $${iterator} = $${iteratorValue}; $${iterator} < $${container}; $${iterator}++) {\n!!{cursor}\n}"
     },
     {
         "name": "For Each",
