@@ -19,6 +19,7 @@ define(function (require, exports, module) {
         root: true,
         "de": true,
         "es": true,
-        "gl": true
+        "gl": true,
+        "tr": true
     };
 });
