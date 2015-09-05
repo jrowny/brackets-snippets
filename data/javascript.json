@@ -1,45 +1,120 @@
 [
     {
+        "name": "React",
+        "trigger": "react",
+        "usage": "react",
+        "description": "Create a simple react function",
+        "template": "var $${var} = React.createClass({\n\trender: function() {\n\t\treturn (\n\t\t\t<div className='$${cls}'>\n\t\t\t\tHello, world!\n\t\t\t</div>\n\t\t);\n\t}\n});\n\nReact.render(\n\t<$${var} />,\n\tdocument.getElementById('$${id}')\n);"
+    },
+    {
+        "name": "Render",
+        "trigger": "rcc",
+        "usage": "rcc",
+        "description": "Create a react render function",
+        "template": "var $${var} = React.createClass({\n\trender: function() {\n\t\treturn (\n\t\t\t<div className='$${cls}'>\n\t\t\t\tHello, world!\n\t\t\t</div>\n\t\t);\n\t}\n});"
+    },
+    {
+        "name": "Props",
+        "trigger": "props",
+        "usage": "props",
+        "description": "adds a props",
+        "template": "this.props.$${var}",
+        "inline": true
+    },
+    {
+        "name": "children",
+        "trigger": "children",
+        "usage": "children",
+        "description": "adds a props children",
+        "template": "this.props.children",
+        "inline": true
+    },
+    {
+        "name": "State",
+        "trigger": "state",
+        "usage": "state",
+        "description": "adds a state",
+        "template": "this.state.$${var}",
+        "inline": true
+    },
+    {
+        "name": "getInitialState",
+        "trigger": "gis",
+        "usage": "gis",
+        "description": "adds a getInitialState function",
+        "template": "\tgetInitialState: function() {\n\treturn {};\n},",
+        "inline": true
+    },
+    {
+        "name": "getDefaultProps",
+        "trigger": "gdp",
+        "usage": "gdp",
+        "description": "adds a getDefaultProps function",
+        "template": "\tgetDefaultProps: function() {\n\treturn {};\n},",
+        "inline": true
+    },
+    {
+        "name": "componentDidMount",
+        "trigger": "cdm",
+        "usage": "cdm",
+        "description": "adds a componentDidMount function",
+        "template": "\tcomponentDidMount: function() {\n\treturn {};\n},",
+        "inline": true
+    },
+    {
+        "name": "componentWillMount",
+        "trigger": "cwm",
+        "usage": "cwm",
+        "description": "adds a componentWillMount function",
+        "template": "\tcomponentWillMount: function() {\n\treturn {};\n},",
+        "inline": true
+    },
+    {
+        "name": "componentWillUnmount",
+        "trigger": "cwu",
+        "usage": "cwu",
+        "description": "adds a componentWillUnmount function",
+        "template": "\tcomponentWillMount: function() {\n\treturn {};\n},",
+        "inline": true
+    },
+    {
+        "name": "componentWillReceiveProps",
+        "trigger": "cwrp",
+        "usage": "cwrp",
+        "description": "adds a componentWillReceiveProps function",
+        "template": "\tcomponentWillReceiveProps: function() {\n\treturn {};\n},",
+        "inline": true
+    },
+     {
+        "name": "shouldComponentUpdate",
+        "trigger": "scu",
+        "usage": "scu",
+        "description": "adds a shouldComponentUpdate function",
+        "template": "\tshouldComponentUpdate: function(nextProps, nextState) {\n\treturn {};\n},",
+        "inline": true
+    },
+    {
+        "name": "componentDidUpdate",
+        "trigger": "cdu",
+        "usage": "cdu",
+        "description": "adds a componentDidUpdate function",
+        "template": "\tcomponentDidUpdate: function(nextProps, nextState) {\n\treturn {};\n},",
+        "inline": true
+    },
+    {
+        "name": "componentWillUpdate",
+        "trigger": "cwu",
+        "usage": "cwu",
+        "description": "adds a componentWillUpdate function",
+        "template": "\tcomponentWillUpdate: function(nextProps, nextState) {\n\treturn {};\n},",
+        "inline": true
+    },
+    {
         "name": "Function",
-        "trigger": "f",
-        "usage": "f myFunc",
-        "description": "Create a javascript function",
-        "template": "function $${name}() {\n!!{cursor}\n}"
-    },
-    {
-        "name": "For Loop",
-        "trigger": "for",
-        "usage": "for x someArray",
-        "description": "Create a javascript for loop",
-        "template": "var $${iterator};\nvar $${limit} = $${container}.length;\nfor ($${iterator} = 0; $${iterator} < $${limit}; $${iterator}++) {\n!!{cursor}\n}"
-    },
-    {
-        "name": "For Each",
-        "trigger": "foreach",
-        "usage": "foreach itemList item",
-        "description": "Create a javascript foreach loop",
-        "template": "$${container}.forEach(function ($${subject}) {\n!!{cursor}\n});"
-    },
-    {
-        "name": "Requires",
-        "trigger": "req",
-        "usage": "req reference module",
-        "description": "Create a javascript requires block",
-        "template": "var $${name} = require(\"$${path}\");"
-    },
-    {
-        "name": "Immediately-Invoked Function",
-        "trigger": "iife",
-        "usage": "iife",
-        "description": "Create a javascript immediately-invoked function",
-        "template": "(function () {\n\"use strict\";\n\n!!{cursor}\n}());"
-    },
-    {
-        "name": "Sample inline script for console logging",
-        "trigger": "log",
-        "usage": "log x",
-        "description": "Log a message into console",
-        "template": "console.log($${message});!!{cursor}",
+        "trigger": "fun",
+        "usage": "fun",
+        "description": "adds a function",
+        "template": "\t$${var}: function() {\n\t\t\n},",
         "inline": true
     }
 ]
