@@ -12,5 +12,208 @@
         "usage": "a index.html home",
         "description": "Create an achor with an href",
         "template": "<a href=\"$${href}\">$${title}</a>"
-    }
+    },
+    {
+        "name": "variable",
+        "trigger": "x",
+        "usage": "variable",
+        "description": "adds variable to your template",
+        "template": "{{ $${variable} }}"
+    },
+    {
+        "name": "for loop",
+        "trigger": "tfor",
+        "usage": "add for loop",
+        "description": "adds for loop",
+        "template": "{% for $${iterable} %}\n\t\n{% end %}"
+    },
+    {
+        "name": "while loop",
+        "trigger": "twhile",
+        "usage": "add while loop",
+        "description": "adds while loop",
+        "template": "{% for $${condition} %}\n\t\n{% end %}"
+    },
+    {
+        "name": "if condition",
+        "trigger": "tif",
+        "usage": "add if condition",
+        "description": "adds if statement",
+        "template": "{% if $${c1} %}\n\t\n{% elif $${c2} %}\n\t\n{% else $${c3} %}\n\t\n{% end %}"
+    },
+    {
+        "name": "elif",
+        "trigger": "elif",
+        "usage": "add elif condition",
+        "description": "adds elif statement",
+        "template": "{% elif $${cond} %}\n\t\n"
+    },
+    {
+        "name": "else",
+        "trigger": "else",
+        "usage": "add else condition",
+        "description": "adds else statement",
+        "template": "{% else $${cond} %}\n\t\n"
+    },
+    {
+        "name": "expression",
+        "trigger": "expr",
+        "usage": "adds expression",
+        "description": "adds expression",
+        "template": "{% $${expression} %}\n\t\n"
+    },
+    {
+        "name": "end",
+        "trigger": "end",
+        "usage": "add end",
+        "description": "adds end",
+        "template": "{% end %}\n"
+    },
+    {
+        "name": "block",
+        "trigger": "block",
+        "usage": "add block",
+        "description": "adds block to doc",
+        "template": "{% block $${block} %}\n\t\n{% end %}"
+    },
+    {
+        "name": "comment",
+        "trigger": "comment",
+        "usage": "add comment",
+        "description": "adds comment to doc",
+        "template": "{% comment %}\n\t\n{% end %}"
+    },
+    {
+        "name": "block",
+        "trigger": "block",
+        "usage": "add block",
+        "description": "adds block to doc",
+        "template": "{% block $${block} %}\n\t\n{% end %}"
+    },
+    {
+        "name": "apply",
+        "trigger": "apply",
+        "usage": "add apply",
+        "description": "adds apply to doc",
+        "template": "{% apply $${func} %}\n\t\n{% end %}"
+    },
+    {
+        "name": "csrf",
+        "trigger": "csrf",
+        "usage": "add csrf",
+        "description": "adds csrf token to doc",
+        "template": "{% raw xsrf_form_html() %}\n"
+    },
+    {
+        "name": "try exception",
+        "trigger": "try",
+        "usage": "add try exception",
+        "description": "adds try exception",
+        "template": "{% try %}\n\t\n{% except %}\n\t\n{% end %}"
+    },
+    {
+        "name": "finally",
+        "trigger": "finally",
+        "usage": "add finally",
+        "description": "adds finally",
+        "template": "{% finally %}\n\t\n"
+    },
+    {
+        "name": "extend",
+        "trigger": "extend",
+        "usage": "add extend",
+        "description": "adds extend",
+        "template": "{% extends \"$${template}\" %}\n\t\n"
+    },
+    {
+        "name": "include",
+        "trigger": "include",
+        "usage": "add include",
+        "description": "adds include",
+        "template": "{% include \"$${template}\" %}\n\t\n"
+    },
+    {
+        "name": "import",
+        "trigger": "import",
+        "usage": "add import",
+        "description": "adds import",
+        "template": "{% import $${module} %}\n\t\n"
+    },
+    {
+        "name": "import from",
+        "trigger": "import_from",
+        "usage": "add from x import y",
+        "description": "from x import y",
+        "template": "{% from $${module} import $${method} %}\n\t\n"
+    },
+    {
+        "name": "module",
+        "trigger": "module",
+        "usage": "add module",
+        "description": "adds module",
+        "template": "{% module $${module} %}\n\t\n"
+    },
+    {
+        "name": "raw",
+        "trigger": "raw",
+        "usage": "add raw",
+        "description": "adds raw",
+        "template": "{% raw $${expr} %}\n\t\n"
+    },
+    {
+        "name": "set",
+        "trigger": "set",
+        "usage": "add set",
+        "description": "adds set",
+        "template": "{% set $${x} = $${y} %}\n\t\n"
+    },
+    {
+        "name": "static",
+        "trigger": "static",
+        "usage": "add static",
+        "description": "adds static",
+        "template": "{% static_url(\"$${static}\") %}\n\t\n"
+    },
+    {
+        "name": "auto escape",
+        "trigger": "autoescape",
+        "usage": "add autoescape",
+        "description": "adds autoescape",
+        "template": "{% autoescape $${func} %}\n\t\n"
+    },
+    {
+        "name": "escape",
+        "trigger": "escape",
+        "usage": "add escape",
+        "description": "adds scape",
+        "template": "{{ escape($${func}) }}"
+    },
+    {
+        "name": "url escape",
+        "trigger": "urlescape",
+        "usage": "add urlescape",
+        "description": "adds urlscape",
+        "template": "{{ url_escape($${func}) }}"
+    },
+    {
+        "name": "xhtml escape",
+        "trigger": "xhtml",
+        "usage": "add xhtml_escape",
+        "description": "add xhtml_escape",
+        "template": "{{ xhtml_escape($${func}) }}"
+    },
+    {
+        "name": "squeeze",
+        "trigger": "squeeze",
+        "usage": "add squeeze",
+        "description": "adds squeeze",
+        "template": "{{ squeeze($${func}) }}"
+    },
+    {
+        "name": "json encode",
+        "trigger": "json",
+        "usage": "add json_encode",
+        "description": "adds json_encode",
+        "template": "{{ json_encode($${func}) }}"
+    }    
 ]
