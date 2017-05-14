@@ -74,6 +74,11 @@
 }
 
 #snippets-enable-icon {
-    background-image: url(images/icon.png);
+    width:24px;
+    height:24px;
+    background: url(images/snippet-icon.svg) no-repeat 0 0;
 }
 
+#snippets-enable-icon.active {
+    background-position: 0 -24px;
+}
